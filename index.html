@@ -154,6 +154,188 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-为什么-读时模式-如此好用？" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/06/15/%E4%B8%BA%E4%BB%80%E4%B9%88-%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F-%E5%A6%82%E6%AD%A4%E5%A5%BD%E7%94%A8%EF%BC%9F/">为什么[读时模式]如此好用？</a>
+    </h1>
+  
+
+        
+        <a href="/2020/06/15/%E4%B8%BA%E4%BB%80%E4%B9%88-%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F-%E5%A6%82%E6%AD%A4%E5%A5%BD%E7%94%A8%EF%BC%9F/" class="archive-article-date">
+  	<time datetime="2020-06-15T12:51:52.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>原文链接 <a href="https://www.ibmbigdatahub.com/blog/why-schema-read-so-useful" target="_blank" rel="noopener">Why is Schema on Read So Useful?</a></p>
+<p>尽管我尽了最大的努力来引导，但在与客户的交流中还是会不断出现的一个问题：“我的系统拥有多大的数据量级我才需要使用大数据解决方案？” 如我先前所写，通常情况下，通过数据量来评估是否选择大数据技术是不合理的。尽管在某些情况下（例如，如果你像我们的某些客户一样明确知道要管理6PB以上的数据）是可以根据数据大小选择大数据解决方案，但是对于大多数的大数据项目都是在数据规模变大之前就需要灵活性。这些系统的灵活性体现在很多方面，但我想在这里重点介绍其中一个：“读时模式”。<br>在数据到达存储系统之前，数据的数据结构是确定的，并且我们在写入数据时将该结构应用于数据存储。我们大多数人都非常熟悉【写时模式】，我们使用传统的（仍然很重要）关系型数据库来存储具有特定结构的数据，通常我们认为它是解决问题的唯一方法。因此，为了大家改变这种想法，让我们来看一下这种方法的利弊。写时模式有一些不小的优点，包括：</p>
+<ul>
+<li>在传统的数据生态系统中，大多数工具（和人员）都期望一旦指定了数据结构就马上可以使用。</li>
+<li>该方法在表达数据节点之间的关系时非常有用</li>
+<li>这可能是存储“密集”型数据的非常有效的方法<br>但是，写时模式并不能解决所有问题。这种方法的缺点有：</li>
+<li>数据结构通常是定制化的，很难更改</li>
+<li>作为数据源，他通常会丢失数据的 原始/原子 性</li>
+<li>在使用数据之前需要进行大量的 建模/实现 工作</li>
+<li>如果某种类型的数据不能被归类的数据结构中，那么将无法有效地存储或使用它（如果可以存储的话）</li>
+<li>非结构化和半结构化数据源一般是不适合的</li>
+</ul>
+<p>我们长期以来一直在进行一些折中妥协，一方面是因为没有更好的选择。大数据技术的出现为此带来了一种替代方案-一种基于读时模式的方案-该方案使我们能够更灵活地匹配我们所服务的数据结构的 问题/成熟度/性质 进行。<br>读时模式非常简单：只需要将信息写入到数据存储中。与写时模式不同，写时模式要求你在加载数据之前就花费时间和精力，而读时模式则几乎没有延迟，因此你通常以原始或原子级别存储数据。换句话说，你可以直接存储从数据源中获得的信息。读时模式意味着你可以先写入数据，然后再确定如何组织数据结构。那么为什么要这样呢？关键驱动力在于：灵活性和重用性。使用写时模式架构方法，如果应用程序、报告和分析不能支持你的数据结构，你很难对其进行支持，可能需要对系统进行修改、或者使用临时方案。如果使用“读取模式”方法，你可以在数据交互时定义数据结构，以便它可以（在某些约束下）成为你想要或需要的几乎任何东西。<br>你可能出于如下多种原因考虑采用读时模式的架构：</p>
+<ul>
+<li>为你使用数据提供巨大的灵活性</li>
+<li>你的 原始/原子 数据可以存储起来，以备将来参考和使用</li>
+<li>这种方法促进了试验，因为“出错”的成本非常低</li>
+<li>缩短了从数据生成到数据可用的时间</li>
+<li>可以灵活地存储非结构化，半结构和/或松散或无组织的数据<br>但读时模式也有一些缺点：</li>
+<li>在计算资源方面可能是“昂贵的”（然后，这些大数据引擎是专门为处理此问题而构建的）</li>
+<li>数据不是自文档化的（即，你无法通过查看schema来确定数据性质）</li>
+<li>你在读取数据的时候必须花时间创建读取架构的作业<br>我们看到的优点远胜于缺点的一个方面是，在多个LOB都尝试命中同一源系统以获取其自己的数据副本的环境中。读时模式的方案涉及到一个数据“着陆区”，在该“着陆区”中写入原始或原子数据。一次获取数据后，所有LOB系统都会根据着陆区的数据对读取请求进行架构设计。这防止了源系统不得不处理所有LOB请求，并提供了一对多的数据存储方法。在以后的专栏中，我们将更多地讨论着陆区模式。请记住，没有一种方法可以满足所有需求。我鼓励大家将此主题添加到“符合要求”讨论中。让我知道你在评论中的想法，并一如既往地感谢你的阅读</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">翻译</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/06/15/%E4%B8%BA%E4%BB%80%E4%B9%88-%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F-%E5%A6%82%E6%AD%A4%E5%A5%BD%E7%94%A8%EF%BC%9F/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-读时模式的合理性分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/06/15/%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%90%88%E7%90%86%E6%80%A7%E5%88%86%E6%9E%90/">读时模式的合理性分析</a>
+    </h1>
+  
+
+        
+        <a href="/2020/06/15/%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%90%88%E7%90%86%E6%80%A7%E5%88%86%E6%9E%90/" class="archive-article-date">
+  	<time datetime="2020-06-15T05:14:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>参考链接：<br><a href="https://www.ibmbigdatahub.com/blog/why-schema-read-so-useful" target="_blank" rel="noopener">https://www.ibmbigdatahub.com/blog/why-schema-read-so-useful</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">hadoop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/06/15/%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%90%88%E7%90%86%E6%80%A7%E5%88%86%E6%9E%90/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-hadoop权威指南读书笔记" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -178,6 +360,17 @@
 <h3 id="2、迭代处理"><a href="#2、迭代处理" class="headerlink" title="2、迭代处理"></a>2、迭代处理</h3><p>许多算法逻辑，自身具有迭代性质，因此和那种每次迭代都从硬盘加载的方式相比，这种在内存中保存每次中间结果集的方式更加高效。mr的架构不允许这样，但是如果使用spark就会比较直接，它在使用数据集方面展现了之中高度探究的风格</p>
 <h3 id="3、流处理"><a href="#3、流处理" class="headerlink" title="3、流处理"></a>3、流处理</h3><p>例如storm、spark Streaming等在无边界数据流上运行实时、分布式的计算，并向hadoop存储系统或外部系统发布结果</p>
 <h3 id="4、搜索"><a href="#4、搜索" class="headerlink" title="4、搜索"></a>4、搜索</h3><p>Solr搜索平台能够在hadoop集群上运行，当文档进入hadoop的时候进行索引，并根据hdfs中存储的索引进行全文检索</p>
+<h2 id="hadoop相较于其他系统的优势"><a href="#hadoop相较于其他系统的优势" class="headerlink" title="hadoop相较于其他系统的优势"></a>hadoop相较于其他系统的优势</h2><h3 id="读时模式"><a href="#读时模式" class="headerlink" title="读时模式"></a>读时模式</h3><p>hadoop对非机构化或半结构化数据非常有效，因为他是读时模式，在处理数据时才对数据进行解释，这种模式在提供灵活性的同时避免了RDBMS数据加载阶段带来的高开销，因为在hadoop中仅仅是一个文件拷贝<br>(经检测，hive在将string写入bigint中，读取为空，后将字段改为string，仍然为空)<br>您谈到了Hadoop和其他NoSQL策略如此成功的原因之一，所以我不确定您是否期望获得学位论文，但这就是事实！数据分析中的额外灵活性和敏捷性可能促成了“数据科学”的爆炸式增长，因为这通常使大规模数据分析变得更加容易。</p>
+<p>传统的关系数据库在存储数据时会考虑架构。它知道第二列是一个整数，它知道有40列，依此类推。因此，您需要提前指定架构并进行规划。这是“写入时的模式”-即在将数据写入数据存储区时应用架构。</p>
+<p>Hive（在某些情况下），Hadoop和许多其他NoSQL系统通常都与“读取模式”有关—在从数据存储中读取数据时应用架构。考虑以下原始文本行：</p>
+<p>A:B:C<del>E:F</del>G:H<del>I::J</del>K<del>L<br>有两种解释方法。</del>可以是定界符，也:可以是定界符。谁知道？读取架构后，这无关紧要。您在分析数据时（而不是在编写数据时）决定架构是什么。这个示例有点荒谬，因为您可能永远都不会遇到这种情况，但是希望它能使您明白这一点。</p>
+<p>读取架构后，您只需将数据加载到数据存储中，然后考虑以后如何解析和解释。在此解释的核心处，读取模式意味着先写入数据，然后再确定数据。写模式意味着先弄清楚数据是什么，然后再写。</p>
+<p>这里需要权衡。其中一些是主观的，也是我自己的看法。</p>
+<p>写模式的好处：</p>
+<p>静态数据的类型安全性和数据清理效果更好<br>由于数据已经被解析，因此通常更有效（存储大小和计算方式）<br>写模式的缺点：</p>
+<p>在存储数据之前，您必须提前计划架构的状态（即，必须进行ETL）<br>通常，您会丢弃原始数据，如果摄取过程中存在错误，则可能会很糟糕<br>对相同数据很难有不同的看法<br>读取模式的好处：</p>
+<p>定义加载时如何解释数据的灵活性<br>随着时间的流逝，这使您能够发展“模式”<br>这使您可以使用不同版本的“模式”<br>这样就可以更改原始源数据格式，而不必合并为一种数据格式<br>您可以保留原始数据<br>在知道如何处理数据之前，您可以加载数据（这样就不会将其放在地面上）<br>使您能够灵活地存储非结构化，不干净和/或非组织化的数据<br>读取模式的缺点：</p>
+<p>通常，它效率较低，因为您每次都必须重新解析和重新解释数据（对于XML等格式，这可能会很昂贵）<br>数据不是自记录的（即，您无法查看用于确定数据是什么的模式）<br>容易出错，您的分析必须考虑脏数据</p>
 
       
 
@@ -556,6 +749,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">生活</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">架构</a>
               </li>
             
             <div class="clearfix"></div>
