@@ -8,14 +8,14 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>《Time, Clocks, and the Ordering of Events in a Distributed System》 | liclass的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="鉴于分布式计算节点独立的特点，时序一直是分布式系统绕不过的话题，本文是对分布式时间-始终问题方面被引用最多的论文之一进行翻译原文链接：Time, Clocks, and the Ordering of Events in a Distributed System Abstract本文讨论了在分布式系统中，一个事件发生在另一个事件之前的概念，并用它描述了事件的偏序关系。 给出了一种可以用于同步逻辑时">
+  <meta name="description" content="https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;87649080https:&#x2F;&#x2F;www.cnblogs.com&#x2F;fxjwind&#x2F;archive&#x2F;2013&#x2F;04&#x2F;13&#x2F;3017892.html 鉴于分布式计算节点独立的特点，时序一直是分布式系统绕不过的话题，本文是对分布式时间-始终问题方面被引用最多的论文之一进行翻译原文链接：Time, Clocks, and the Ordering o">
 <meta property="og:type" content="article">
 <meta property="og:title" content="《Time, Clocks, and the Ordering of Events in a Distributed System》">
 <meta property="og:url" content="http://yoursite.com/2020/06/18/%E3%80%8ATime-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System%E3%80%8B/index.html">
 <meta property="og:site_name" content="liclass的博客">
-<meta property="og:description" content="鉴于分布式计算节点独立的特点，时序一直是分布式系统绕不过的话题，本文是对分布式时间-始终问题方面被引用最多的论文之一进行翻译原文链接：Time, Clocks, and the Ordering of Events in a Distributed System Abstract本文讨论了在分布式系统中，一个事件发生在另一个事件之前的概念，并用它描述了事件的偏序关系。 给出了一种可以用于同步逻辑时">
+<meta property="og:description" content="https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;87649080https:&#x2F;&#x2F;www.cnblogs.com&#x2F;fxjwind&#x2F;archive&#x2F;2013&#x2F;04&#x2F;13&#x2F;3017892.html 鉴于分布式计算节点独立的特点，时序一直是分布式系统绕不过的话题，本文是对分布式时间-始终问题方面被引用最多的论文之一进行翻译原文链接：Time, Clocks, and the Ordering o">
 <meta property="article:published_time" content="2020-06-18T12:52:27.000Z">
-<meta property="article:modified_time" content="2020-06-18T14:36:52.138Z">
+<meta property="article:modified_time" content="2020-06-18T14:50:43.396Z">
 <meta property="article:author" content="liclass">
 <meta property="article:tag" content="大数据">
 <meta property="article:tag" content="翻译">
@@ -176,13 +176,15 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>鉴于分布式计算节点独立的特点，时序一直是分布式系统绕不过的话题，本文是对分布式时间-始终问题方面被引用最多的论文之一进行翻译<br><br>原文链接：<a href="https://lamport.azurewebsites.net/pubs/time-clocks.pdf" target="_blank" rel="noopener">Time, Clocks, and the Ordering of Events in a Distributed System</a><br></p>
+        <p><a href="https://zhuanlan.zhihu.com/p/87649080" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/87649080</a><br><a href="https://www.cnblogs.com/fxjwind/archive/2013/04/13/3017892.html" target="_blank" rel="noopener">https://www.cnblogs.com/fxjwind/archive/2013/04/13/3017892.html</a></p>
+<p>鉴于分布式计算节点独立的特点，时序一直是分布式系统绕不过的话题，本文是对分布式时间-始终问题方面被引用最多的论文之一进行翻译<br><br>原文链接：<a href="https://lamport.azurewebsites.net/pubs/time-clocks.pdf" target="_blank" rel="noopener">Time, Clocks, and the Ordering of Events in a Distributed System</a><br></p>
 <p>Abstract<br>本文讨论了在分布式系统中，一个事件发生在另一个事件之前的概念，并用它描述了事件的偏序关系。 给出了一种可以用于同步逻辑时钟系统的分布式算法，逻辑时钟系统可以用于确定事件的全序关系。 全序关系用以解决分布式中遇到的事件同步问题。 该方法被用于解决同步物理时钟，并且限定同步时钟的误差。</p>
 <p>Key Words and Phrases:<br>分布式系统、计算机网络、时钟同步、多线程</p>
 <p>Introduction<br>在我们的思维中，时间是一个基础概念。它来源于更加基础的概念事件的发生顺序。假如一件事发生之后我们读到时钟时间为3：15，那么我们说事件发生在3：15，并且我们之后读到时钟时间3：16。事件的时间顺序的概念贯穿整个我们对系统的思考。比如，在航空预定系统中，如果预定操作在航班满员之前，那么预定操作需要被允许。但是，在分布式系统中，我们需要仔细的重新审视这个概念。<br></p>
 <p>分布式系统由一系列空间上分离，通过交换信息来进行通信的进程组成。一个互联的计算机网络，如ARPA，是一个分布式系统。单台计算机也可以被看做是由中心控制单元，内存单元，输入输出等不同的进程组成的分布式系统。如果与单个进程内事件发生的间隔时间相比，系统中消息的传递延迟不可以被忽略，那么这个系统可以被认为是一个分布式系统。<br></p>
 <p>我们主要关注空间上分离的计算机。但是我们的很多结论能被广泛的应用。特别是因为事件发生顺序不可预知，单个计算机上的多处理系统涉及的问题和分布式系统的问题非常相似。<br></p>
-<p>在一个分布式系统中，有时候无法确定一个事件发生于另一个事件之前。而“发生之前”的关系只是系统中事件的一个偏序关系。我们发现由于人们没有弄清楚这一点而导致一些问题问题的出现。<br>在这篇论文中，我们讨论偏序关系，并给出一个分布式算法将其拓展为所有事件的全序关系。这个算法能够提供有效的机制来实现一个分布式系统。我们通过一个解决同步问题的简单方法来说明它的用法。不幸的是，如果通过这个算法得出的顺序和用于感知的不一样，可能会发生异常的行为。这可以通过引入真实的物理时钟来避免。我们描述了同于同步这些时钟的简单方法，并且推导出了时钟偏差的范围。<br>The Partial Ordering<br>大部分人会认为事件a发生于事件b之前，如果事件a发生的时间早于事件b。他们可能通过物理理论事件来证明这个定义。但是，如果一个系统需要正确的符合规范，那么必须根据系统中可观察的时间给出该规范。假如规范是在物理时间的条款下给出的，那么系统中必须包含一个真实的时钟。即使真的包含物理时钟，依旧会存在问题，因为时钟会存在误差。因此我们将不通过物理时钟来定义“事件a发生于事件b之前”。换言之，单个进程中的事件是有预先的顺序关系的。这看起来符合单进程的实际情况。当然，我们可以对我们的定义进行拓展，从而将当个进程划分为多个子进程，但我们没有必要这么做。</p>
+<p>在一个分布式系统中，有时候无法确定一个事件发生于另一个事件之前。而“发生之前”的关系只是系统中事件的一个偏序关系[注：偏序, 只有部分元素之间有顺序关系, 非线性, 比如分布式系统中的并发关系]。我们发现由于人们没有弄清楚这一点而导致一些问题的出现。<br></p>
+<p>在这篇论文中，我们讨论偏序关系，并给出一个分布式算法将其拓展为所有事件的全序关系。这个算法能够提供有效的机制来实现一个分布式系统。我们通过一个解决同步问题的简单方法来说明它的用法。不幸的是，如果通过这个算法得出的顺序和用于感知的不一样，可能会发生异常的行为。这可以通过引入真实的物理时钟来避免。我们描述了同于同步这些时钟的简单方法，并且推导出了时钟偏差的范围。<br>The Partial Ordering<br>大部分人会认为事件a发生于事件b之前，如果事件a发生的时间早于事件b。他们可能通过物理理论事件来证明这个定义。但是，如果一个系统需要正确的符合规范，那么必须根据系统中可观察的时间给出该规范。假如规范是在物理时间的条款下给出的，那么系统中必须包含一个真实的时钟。即使真的包含物理时钟，依旧会存在问题，因为时钟会存在误差。因此我们将不通过物理时钟来定义“事件a发生于事件b之前”。换言之，单个进程中的事件是有预先的顺序关系的。这看起来符合单进程的实际情况。当然，我们可以对我们的定义进行拓展，从而将当个进程划分为多个子进程，但我们没有必要这么做。</p>
 <p>我们假设发送和接收一条消息时一个进程中的一个事件。我们将“a发生于b之前”的关系定义为a→b，即→表示“发生于…之前”。</p>
 <p>定义→关系需要满足一下三个条件：（1）如果事件a、b在一个进程中，a发生于b之前，那么a→b；（2）如果a是发送一条消息的事件，而b是接收这条消息的事件，那么a→b；（3）假如a→b成立，且b→c成立，那么a→c成立。如果两个事件a、b不满足a→b或者b→a，那么认为a、b两个事件是并发的。</p>
 <p>我们假设a→a是不成立的（一个事件发生于自己之前显得没有什么意义），那么→是不具备自反性的偏序关系。</p>
