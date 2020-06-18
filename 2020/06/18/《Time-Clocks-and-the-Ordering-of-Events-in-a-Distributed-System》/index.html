@@ -6,16 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2020/6 | liclass的博客</title>
+  <title>《Time, Clocks, and the Ordering of Events in a Distributed System》 | liclass的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="一些琐碎无聊的记录">
-<meta property="og:type" content="website">
-<meta property="og:title" content="liclass的博客">
-<meta property="og:url" content="http://yoursite.com/archives/2020/06/index.html">
+  <meta name="description" content="鉴于分布式计算节点独立的特点，时序一直是分布式系统绕不过的话题，本文是对分布式时间-始终问题方面被引用最多的论文之一进行翻译原文链接：Time, Clocks, and the Ordering of Events in a Distributed System Abstract本文讨论了在分布式系统中，一个事件发生在另一个事件之前的概念，并用它描述了事件的偏序关系。 给出了一种可以用于同步逻辑时">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Time, Clocks, and the Ordering of Events in a Distributed System》">
+<meta property="og:url" content="http://yoursite.com/2020/06/18/%E3%80%8ATime-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System%E3%80%8B/index.html">
 <meta property="og:site_name" content="liclass的博客">
-<meta property="og:description" content="一些琐碎无聊的记录">
+<meta property="og:description" content="鉴于分布式计算节点独立的特点，时序一直是分布式系统绕不过的话题，本文是对分布式时间-始终问题方面被引用最多的论文之一进行翻译原文链接：Time, Clocks, and the Ordering of Events in a Distributed System Abstract本文讨论了在分布式系统中，一个事件发生在另一个事件之前的概念，并用它描述了事件的偏序关系。 给出了一种可以用于同步逻辑时">
+<meta property="article:published_time" content="2020-06-18T12:52:27.000Z">
+<meta property="article:modified_time" content="2020-06-18T14:36:52.138Z">
 <meta property="article:author" content="liclass">
-<meta property="article:tag" content="大数据、数据仓库、java、hive、kafka">
+<meta property="article:tag" content="大数据">
+<meta property="article:tag" content="翻译">
+<meta property="article:tag" content="架构">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="liclass的博客" type="application/atom+xml">
@@ -152,36 +156,107 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-《Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System》" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      《Time, Clocks, and the Ordering of Events in a Distributed System》
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/06/18/%E3%80%8ATime-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System%E3%80%8B/" class="archive-article-date">
+
+        
+        <a href="/2020/06/18/%E3%80%8ATime-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System%E3%80%8B/" class="archive-article-date">
   	<time datetime="2020-06-18T12:52:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-18</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/06/18/%E3%80%8ATime-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System%E3%80%8B/">《Time, Clocks, and the Ordering of Events in a Distributed System》</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>鉴于分布式计算节点独立的特点，时序一直是分布式系统绕不过的话题，本文是对分布式时间-始终问题方面被引用最多的论文之一进行翻译<br><br>原文链接：<a href="https://lamport.azurewebsites.net/pubs/time-clocks.pdf" target="_blank" rel="noopener">Time, Clocks, and the Ordering of Events in a Distributed System</a><br></p>
+<p>Abstract<br>本文讨论了在分布式系统中，一个事件发生在另一个事件之前的概念，并用它描述了事件的偏序关系。 给出了一种可以用于同步逻辑时钟系统的分布式算法，逻辑时钟系统可以用于确定事件的全序关系。 全序关系用以解决分布式中遇到的事件同步问题。 该方法被用于解决同步物理时钟，并且限定同步时钟的误差。</p>
+<p>Key Words and Phrases:<br>分布式系统、计算机网络、时钟同步、多线程</p>
+<p>Introduction<br>在我们的思维中，时间是一个基础概念。它来源于更加基础的概念事件的发生顺序。假如一件事发生之后我们读到时钟时间为3：15，那么我们说事件发生在3：15，并且我们之后读到时钟时间3：16。事件的时间顺序的概念贯穿整个我们对系统的思考。比如，在航空预定系统中，如果预定操作在航班满员之前，那么预定操作需要被允许。但是，在分布式系统中，我们需要仔细的重新审视这个概念。<br></p>
+<p>分布式系统由一系列空间上分离，通过交换信息来进行通信的进程组成。一个互联的计算机网络，如ARPA，是一个分布式系统。单台计算机也可以被看做是由中心控制单元，内存单元，输入输出等不同的进程组成的分布式系统。如果与单个进程内事件发生的间隔时间相比，系统中消息的传递延迟不可以被忽略，那么这个系统可以被认为是一个分布式系统。<br></p>
+<p>我们主要关注空间上分离的计算机。但是我们的很多结论能被广泛的应用。特别是因为事件发生顺序不可预知，单个计算机上的多处理系统涉及的问题和分布式系统的问题非常相似。<br></p>
+<p>在一个分布式系统中，有时候无法确定一个事件发生于另一个事件之前。而“发生之前”的关系只是系统中事件的一个偏序关系。我们发现由于人们没有弄清楚这一点而导致一些问题问题的出现。<br>在这篇论文中，我们讨论偏序关系，并给出一个分布式算法将其拓展为所有事件的全序关系。这个算法能够提供有效的机制来实现一个分布式系统。我们通过一个解决同步问题的简单方法来说明它的用法。不幸的是，如果通过这个算法得出的顺序和用于感知的不一样，可能会发生异常的行为。这可以通过引入真实的物理时钟来避免。我们描述了同于同步这些时钟的简单方法，并且推导出了时钟偏差的范围。<br>The Partial Ordering<br>大部分人会认为事件a发生于事件b之前，如果事件a发生的时间早于事件b。他们可能通过物理理论事件来证明这个定义。但是，如果一个系统需要正确的符合规范，那么必须根据系统中可观察的时间给出该规范。假如规范是在物理时间的条款下给出的，那么系统中必须包含一个真实的时钟。即使真的包含物理时钟，依旧会存在问题，因为时钟会存在误差。因此我们将不通过物理时钟来定义“事件a发生于事件b之前”。换言之，单个进程中的事件是有预先的顺序关系的。这看起来符合单进程的实际情况。当然，我们可以对我们的定义进行拓展，从而将当个进程划分为多个子进程，但我们没有必要这么做。</p>
+<p>我们假设发送和接收一条消息时一个进程中的一个事件。我们将“a发生于b之前”的关系定义为a→b，即→表示“发生于…之前”。</p>
+<p>定义→关系需要满足一下三个条件：（1）如果事件a、b在一个进程中，a发生于b之前，那么a→b；（2）如果a是发送一条消息的事件，而b是接收这条消息的事件，那么a→b；（3）假如a→b成立，且b→c成立，那么a→c成立。如果两个事件a、b不满足a→b或者b→a，那么认为a、b两个事件是并发的。</p>
+<p>我们假设a→a是不成立的（一个事件发生于自己之前显得没有什么意义），那么→是不具备自反性的偏序关系。</p>
+<p>通过图1这样的“时空图”对理解这个定义是非常有帮助的。水平方向表示空间，垂直方向表示时间——越迟的时间在垂直方向上的位置更高。点表示事件，垂直线表示进程，波浪线表示消息。显而易见的，a→b意味着可以沿着进程线和消息线从a点到达b点。比如图一中的p1→r4（p1→q2→q4→r3→r4）。</p>
+<p>也可以换一种方式来理解该定义，比如可以认为a-&gt;b意味着是事件a导致了事件b的发生。如果两个事件相互之间没有因果关系，我们就认为它们是并行发生的。比如图1中的p3和q3就是concurrent的。尽管图画地让人觉得q3比p3发生的物理时间要早，但是进程P在p4那一点收到消息之前是根本不知道进程Q何时执行了q3的。(在事件p4之前，P进程最多能知道计划要在q3做的事情)。</p>
+<p>这个定义对于那些熟悉狭义相对论时空观的人应该会显得比较自然。在相对论中，事件间的顺序是通过可能被消息来定义的。但是，我们采用了更实用的方法，只考虑那些实际中真的被发送的消息。当然如果知道了那些实际发生的事件，我们就可以判断系统是否工作正常，而不需要知道那些可能会发生的事件。</p>
+<p>Logical Clocks<br>现在我们将逻辑时钟引入到系统中。我们将逻辑时钟抽象成只是给事件分配编号，编号代表事件发生的时间。更准确的说，我们为进程Pi定义一个时钟Ci为进程中的每个事件分配一个编号Ci<a>。系统的全局时钟为C，对任意事件b，它的时间为C<b>，如果b是进程j中的事件，那么C<b>=Cj<b>。目前为止，对Ci我们没有引入任何物理时钟的依赖，所以我们可以认为Ci是逻辑上的时钟，和物理时钟无关。它可以采用计数器的方式实现而不需要任何计时机制。</p>
+<p>我们现在来考虑对于这样一个时钟系统的正确性的涵义。我们不能将定义的正确性基于物理时间之上，因为这需要引入持有物理时间的时钟。我们的定义必须基于事件发生的顺序。合理的条件是，如果事件a发生在另一个事件b之前，那么a发生的时间应该早于b。将该条件更形式化地表述如下：</p>
+<p><em>Clock Condition.</em> For any event a and b:</p>
+<p>if a → b then C<a> &lt; C<b></p>
+<p>需要注意的是我们不能期望这个条件的逆命题成立，即C<a> &lt; C<b>并不意味着a → b。因为如果相反的条件也成立，那么意味着并发的事件必须发生在同一时间（命题和逆命题都成立的条件下，并发就只能是C<a>=C<b>）。比如图1中，p2、p3都和q3并行，如果逆命题成立，那么p2、p3发生在同一时间，这和实际p2→p3的关系冲突。</p>
+<p>从我们队“→”关系的定义可以看出，如果满足一下两个条件，那么久满足Clock Condition:</p>
+<p>如果a、b是同一个进程中的事件，且a发生在b之前，那么C<a> &lt; C<b><br>如果a、b是不同进程中的事件，且a是发送一条消息的事件，而b是接收这条消息的事件，那么C<a> &lt; C<b><br>从时空图的角度考虑时钟。我们假设进程的时钟在每个事件之间tick，且每次tick增加1。比如a、b是Pi进程中的事件，如果Ci<a> = 4,C1<b> = 7，那么这两个事件之间时钟会走过5、6、7。如果我们通过虚线(时间线)将所有tick的点连接起来，那么图1看起来会类似图2。Condition C1意味着同一个进程中任何两个事件之间都有一条虚线；Condition C2意味着消息线必然和虚线交叉。</p>
+<p>我们可以将时间线作为空间时间上一些笛卡尔坐标系的时间坐标线。我们可以将图2中的时间线拉直，那么可以得到图3。图3是对图2的另一种更好理解的描述。在没有引入物理时间的情况下，没有办法判断这3幅图哪一幅图更好的表示了系统的状态。</p>
+<p>读者会发现如果将进程想象成一个二维的网络图，那么将产生一个三维的时空图。进程和消息仍然由线表示，时间线则变成了一个二维的平面。</p>
+<p>现在让我们假设这些进程是一些算法，事件表示算法执行过程中的一些行为。我们将如何进入满足Clock Condition的时钟。进程Pi的时钟由Ci表示，Ci<a>表示Pi中a发生的时间，Ci的值在发生事件时会改变，Ci的改变本身不包含事件。</p>
+<p>为了满足Clock Condition，我们需要确保满足C1、C2条件。C1非常简单，进程只需要按照以下步骤：</p>
+<p>IR1：任何一个进程Pi在两个成功事件之间递增Ci</p>
+<p>为了满足C2，我们需要每条消息m包含一个时间戳Tm，Tm表示消息被发送的时间。收到该消息的进程需要将时钟调整到大于Tm。更准确的，需要满足一下规则：</p>
+<p>IR2：(a) 如果事件a表示Pi进程发送消息m，那么m包含一个时间戳Tm，Tm=Ci<a>。(b)进程Pj收到消息m，Pj需要将Cj设置为等于或大于当前值，且大于Tm的值。</p>
+<p>在IR2中，我们认为代表消息m被接收的时间在设置Cj之后（其实含义是需要将时间进行调整，之后再处理这条消息）。很明显，IR2保证了条件C2的满足。因此，IR1和IR2保证了Clock Condition的满足，这样它们就保证了得到的是一个正确的逻辑时钟系统。</p>
+<p>Ordering the Events Totally<br>我们可以使用满足Clock Condition的时钟系统来获取系统中所有事件的全序关系。我们简单的将他们按照发生的时间进行排序。为了打破僵局，我们使用系统的任意一个全序关系：“&lt;”。更精确的，我们定义一个关系”=&gt;”：对于Pi中的事件a和Pj中的事件b，如果C<a> &lt; C&lt;\b&gt;或C<a> = C&lt;\b&gt;，且Pi &lt; Pj,那么a=&gt;b。显而易见的，这是一个全序关系，同时如果a-&gt;b，那么a=&gt;b。换言之，=&gt;将“发生于…之前”的偏序关系变成了全序关系。</p>
+<p>=&gt;的顺序关系依赖于系统的时钟Ci，并且不是唯一的。选择满足Clock Condition的不同系统时钟将得到不同的全序关系。对于给定的全序关系，一定会有一个满足Clock Condition的系统时钟。只有偏序关系是由系统的事件唯一决定的。</p>
+<p>能确定事件的全序关系对实现分布式系统是非常有用的。实际上，实现一个系统逻辑时钟的目的就是为了获得全序关系。我们将通过解决版本互斥的问题来说明全序关系的使用。考虑一个由多个进程组成，且贡献一个资源的系统。一个时刻只能有一个线程使用资源，所以线程间需要同步来避免冲突。我们希望寻找一个满足如下三个条件的算法来将资源分配给线程：1. 资源在分配给其他进程前，需要获取了资源的进程进行释放资源的操作；2. 资源的请求必须按照请求的发生顺序进行分配；3. 如果每个被授予资源的进程最终都释放了资源，那么每个请求最终都会被授予资源。</p>
+<p>我们假设初始状态资源只会被分配给一个进程。</p>
+<p>这些事非常自然的需求。他们准确的定义了什么样的解决方案是正确的。观察这些条件是如何涉及到事件顺序的。对于条件2，它并没指定对于并发请求的授权顺序。</p>
+<p>认识到这是一个不平凡的问题非常重要。采用中心进程来统一授权的方式并不能解决这个问题，除非添加额外的假设。来看这样的场景，P0为中心授权的进程；如果P1像P0发起申请资源的请求，之后给P2进程发送消息；P2进程收到后也想P0进程申请资源；P2的请求可能先于P1的请求到达P0，那么条件2将被违反（没有按照请求发生的时间来授权）。</p>
+<p>为了解决这个问题，我们实现了一个满足IR1和IR2的系统时钟，然后用它来定义一个全序关系=&gt;。这提供了所有request和release操作的顺序。利用这个顺序就可以比较容易的找到一个解。它只需要确保每个进程知道其他进程的操作。</p>
+<p>为了简化问题，我们做了一些假设。这些假设不是必须的，但是引入他们可以避免陷入细节的讨论当中。首先，我们假设所有任何两个进程Pi和Pj，所有从Pi发送到Pj的消息都将按照他们的发送顺序被Pj接收。其次，我们假设所有的消息都会被接收（这些假设可以避免引入消息序号和确认机制）。最后，我们假设一个进程能直接的向所有的其他进程发送消息。</p>
+<p>每个进程会维护一个它自己的，对其他进程不可见的请求队列。我们假设请求队列初始状态只有一个消息T0:P0资源请求，P0代表初始时刻获得资源授权的进程，T0小于任意时钟初始值。</p>
+<p>算法由以下5个规则定义。方便起见，假设每个规则定义的行为为一个独立的事件。</p>
+<p>为了申请资源，Pi发送资源申请请求Tm:Pi给所有其他的进程，并将消息放入自己的请求队列。Tm表示消息的时间。<br>当Pj收到Tm:pi的请求，将其放入请求队列并发送一个带有时间戳的ACK给Pi。<br>释放资源时，Pi将Tm:Pi从请求队列中移除，并发送一个带有时间戳的Pi释放资源的消息给所有的其他进程。<br>当Pj接收到Pi释放资源的消息时，它将Tm:Pj请求资源的消息从请求队列中移除。<br>当以下两个条件被满足时Pi获得资源：(a)按=&gt;的顺序，Tm:Pi的消息在请求队列的最前面；(b)Pi从其他每个进程至少收到了一条时间戳大于Tm的消息。<br>条件5中的(a)、(b)都只需要在Pi本地进行验证。</p>
+<p>很容易验证满足以上规则的算法满足之前的资源分配算法的1、2、3条件（1. 资源在分配给其他进程前，需要获取了资源的进程进行释放资源的操作；2. 资源的请求必须按照请求的发生顺序进行分配；3. 如果每个被授予资源的进程最终都释放了资源，那么每个请求最终都会被授予资源）。首先观察规则5的条件b，假设消息是顺序接收的，就可以保证Pi已经收到了所有排在它当前请求之前的所有请求。只有规则3和规则4会从请求队列中删除消息，因此可以很容易的看出条件1是满足的。条件2可以通过如下事实得出：全序关系=&gt;是对偏序关系-&gt;的拓展。规则2保证了在Pi发出资源请求后，规则5的条件(b)最终一定会成立。规则3和4意味着如果获取了资源授权的所有进程最终释放掉资源后，那么规则5的条件(a)最终也一定会成立，这就证明了条件(3)。</p>
+<p>这是一个分布式算法。每个独立的进程遵循这些规则，算法中没有中心同步进程，也没有中心存储设备。该方法可以被通用化，来实现分布式的多进程系统所需要的任意同步机制。同步过程可以通过状态机来描述，该状态机包含一个命令集合C，一个可能的状态集合S，以及一个函数e：C×S-&gt;S。关系e(C,S)=S’的含义是，在处于状态S的状态机执行命令C，将会使状态机转移到状态S’。在我们的例子中，C包括所有的Pi资源请求和资源释放命令，状态包括一个处于等待状态的请求命令队列，同时处于队列顶端的那个请求就是要被授权的那个。请求命令的执行将会将该请求添加到队列末尾，释放命令的执行将会从队列中删除一个命令。</p>
+<p>每个进程独立地通过使用所有进程产生的命令来驱动该状态机的执行。所有的进程按照命令的时间戳激进行排序，因此所有的进程都会使用相同的命令序列。当一个进程收到所有的其他进程发出的小于或者等于T的命令之后他就能执行T的命令。具体的算法已经很明了了，因此我们不再进行描述。</p>
+<p>该方法使得我们可以在分布式系统中实现多进程的同步。但是，该算法要求所有进程都参与其中。每个进程需要知道所有其他进程的所有命令，所以单个进程的故障将使其他进程的状态机无法正确变更，从而导致系统停止工作。</p>
+<p>错误处理是一个很困难的问题，同时对它进行细节性的讨论已经超出了本篇文章的范围。只是需要指出的是，failure这个概念只有在物理时间上下文中才有意义。如果没有物理时间，就没有办法去区分进程是出错了还是只是处于事件之间的间歇。用户只能通过系统很长时间都没有响应来判断系统出了问题。在进程或通信线路出错时也能正常工作的方法，我们将会在[3]中进行描述。（Lamport, L. The implementation of reliable distributed multiprocess systems. To appear in Computer Networks.）</p>
+<p>Anomalous Behavior<br>我们的资源调度算法按照全序关系对请求进行排序。这允许下面这种异常行为的发生。考虑一个由相互连接的计算机组成的全国性系统。假设某人在计算机A上产生了一个请求A，然后他打电话告诉住在另一个城市里的朋友B，让它在计算机B上产生一个请求B。对于请求B来说很有可能会获得一个更小的时间戳然后被排在A前面。这是有可能发生的，因为系统没有办法知道A实际上发生在B之前，因为该信息是基于位于系统外部的消息的。</p>
+<p>让我们更深入地考察下该问题产生的根源。令∮代表所有系统事件组成的集合，然后我们再引入一个包含了∮中的事件以及所有其他外部事件(比如上面例子中的打电话)的集合∮’。令-&gt;（注意这个是加粗的-&gt;，与前面的-&gt;不同）表示∮’中的happen before关系。在上面的例子中，有A-&gt;B,但是A!-&gt;B。很明显一个完全基于∮中的事件，而对的∮’中的其他事件没有任何联系的算法，是无法保证请求A会被排在请求B前面的。</p>
+<p>有两种可能的方式可以避免这种异常行为。第一种方式是将关于-&gt;顺序的必要信息显式地引入到系统中。比如在上面的例子中，该用户在产生请求A时可以获取它在系统中的时间戳T，然后他可以在打电话通知他朋友的时候，告诉他这个时间戳，然后在他朋友产生请求B的时候，告知系统产生一个晚于T的时间戳。这样就将这种异常行为交给用户自己来负责。</p>
+<p>第二种方法就是构造一个满足如下条件的时钟系统：</p>
+<p>Strong Clock Condition.对于∮’中的任意两个事件，如果a-&gt;b，那么C<a> &lt; C<b>。</p>
+<p>该条件要比之前的Clock Condition强，因为-&gt;比-&gt;要强。通常我们的逻辑时钟无法满足该条件。</p>
+<p>如果我们令∮’表示物理时空中真实事件的集合，令-&gt;代表由狭义相对论所定义的事件偏序关系。在我们所在的宇宙中，是有可能构造出一个由相互之间独立运行的多个物理时钟构成的满足Strong Clock Condition的时钟系统的。因此我们可以使用物理时钟来避免这种异常行为。下面我们就将注意力转移到这类时钟之上。</p>
+<p>Physical Clocks<br>现在我们将物理时间引入到我们的时空图中，令Ci(t)表示在物理时间t所读取到的时钟Ci的值。为了方便数学表述，我们假设时钟是以连续而非离散的滴答走动的。更准确地说，我们假设Ci(t)是一个在时间t上的连续的可微分函数，除了那些时钟被重置时的孤立突变点之外。dCi(t)/dt代表了时钟在时间t时的速率。</p>
+<p>如果将时钟Ci作为一个真实的物理时钟，那么它还必须以一个近似正确的速率来运行。也就是说，必须要保对于所有的t，dCi(t)/dt≈1。更准确地说，我们要保证满足如下条件：</p>
+<p>PC1.存在一个常数k，对于所有的i：| dCi(t)/dt -1|&lt;k</p>
+<p>对于典型的由晶体控制的时钟来说，k&lt;=10^-6.</p>
+<p>如果时钟只是单单地以近似正确的速率运行是不够的。它们还必须是同步的，即对于所有的i，j，t来说，Ci(t)≈Cj(t)。更准确地说，必须存在一个足够小的常数e，满足如下条件：</p>
+<p>PC2.对于所有的i,j：| Ci(t)-Cj(t)|&lt;e.</p>
+<p>如果我们让图2中的垂直距离来表示物理时间的话，那么PC2意味着单个滴答线上的高度差异要小于e。</p>
+<p>由于两个不同的时钟永远都不会以相同的速率走动，这意味着它们之间的偏差会越来越大。但是，首先我们来看一下k和e要多小才能避免异常行为。我们必须要保证系统∮’中的所有相关事件都满足Strong Clock Condition。首先我们假设我们的时钟满足普通的Clock Condition，那么只需要保证∮’中那些不满足a-&gt;b的事件满足Strong Clock Condition。因此我们只需要考虑发生在不同进程中的事件。</p>
+<p>令u表示满足如下条件的值：如果事件a发生在物理时间t，同时b是发生在另一个进程中的满足a-&gt;b事件，那么b肯定发生在物理时间t+u之后。换句话说，u需要小于进程间消息传输的最短时间。我们可以用进程间的距离除以光速的值作为u的值。当然，这取决于∮’中消息是如何传输的，u的值也可以很大。</p>
+<p>为避免异常行为，我们必须保证对于任意i，j，t：Ci(t+u)-Cj(t)&gt;0，再结合PC1和PC2，我们就可以建立起所需要的最小的k和e值与u之间的关系。同时我们假设时钟被重置时，它的时间只会超前而绝不会后退(后退会导致条件C1被违反)。PC1意味着Ci(t+u)-Ci(t)&gt;(1-k)u。再结合PC2，就可以很容易地得出如果如下不等式成立，那么Ci(t+u)-Cj(t)&gt;0就成立：e(1-k) &lt;= u。该不等式再加上PC1和PC2就可以保证异常行为不会发生。</p>
+<p>现在我们来描述下用来保证PC2成立的算法。令m表示一个在物理时间t发送和时间t’被接收的消息。我们定义Vm=t’-t来表示消息m的总延迟。当然，接收消息m的进程并不知道该延迟。但是我们假设接收进程知道某个最小延迟取值Um&gt;=0，并且Um&lt;=Vm。我们称Em=Vm-Um为消息的不可预测的延迟部分。</p>
+<p>现在我们将规则IR1和IR2针对物理时钟修改如下：</p>
+<p>IR1’.对于每个i，如果Pi在物理时间t未收到消息，那么Ci是在时间t就是可微分的并且dCi(t)/dt&gt;0.</p>
+<p>IR2’.(a)如果Pi在物理时间t发送了一个消息m，那么m将包含一个时间戳Tm=Ci(t).(b)当在时间t’接收到消息m时，进程Pj将设置Cj(t’)等于max(Cj(t’-0),Tm+Um).(注：Cj(t’-0)=[limCj(t’-|&amp;|),&amp;-&gt;0])</p>
+<p>尽管这些规则的描述使用的都是物理时间，进程只需要知道它自己的时钟值以及它接收到的消息中的时间戳即可。为了数学描述的方便，我们假设事件均发生在一个精确的物理时间点上，同时相同进程的不同事件发生在不同的时间。这些规则仅仅是针对规则IR1和IR2的一个特化版本，因此我们的时钟系统是满足Clock Condition的。实际上，由于真实的事件都会持续一段有限的时间，这就使得该算法实现起来没有什么困难。实现唯一需要注意的是要确保离散的时钟滴答是足够频繁的，可以保证满足C1。</p>
+<p>现在我们来展示一下如何用该时钟同步算法来保证条件PC2的满足。我们假设该系统可以用一个有向图来表示，图中从进程Pi到进程Pj的边表示一个通信线路，消息可以直接通过该线路从Pi发送到Pj。同时我们假设每τ秒就会有一条消息通过该线路，这样对于任意的时间t，在物理时间t到t+τ之间，Pi至少发送了一条消息到Pj。有向图的直径是满足如下条件的最小值d：对于任意的两个进程Pj,Pk，都存在一条从Pj到Pk的路径，该路径最多具有d条边。</p>
+<p>除了建立起了PC2，下面的定理还给出了系统首次启动时令时钟达到同步状态所花时间的上界。</p>
+<p>THEOREM假设一个半径为d的由多个进程组成的强连通图始终满足规则IR1’和IR2’。同时对于任意消息m，Um&lt;=某常数U,以及任意时刻t&gt;=t0来说：(a)PC1成立.(b)存在常数τ和ε，每τ秒都会有一个消息在不可预测的延迟部分小于ε的情况下在每条边上传送。那么PC2就能被满足，同时对于所有的t&gt;t0+τd，e≈d(2kτ+ε)，这里我们假设U+ε&lt;&lt;τ。</p>
+<p>该定理的证明令人吃惊地困难，详细证明过程见附录。目前针对物理时钟的同步问题人们已经进行了大量的研究。推荐读者阅读[4]了解下这个问题（Ellingson, C, and Kulpinski, R.J. Dissemination of system-time. 1EEE Trans. Comm. Com-23, 5 (May 1973), 605-624.）。该领域提出的很多方法，都可以用来估计消息传输Um以及调整时钟频率dCi/dt(适用于那些允许进行调整的时钟)。但是，看起来时钟不能回退的这个要求使得我们的场景与之前被研究的那些有所不同，同时我们相信该定理是一个全新的结论。</p>
+<p>Conclusion<br>可以看到“happening before”定义了分布式系统中事件的一个偏序关系。我们描述了一个可以将偏序关系拓展为某个全序关系的算法，同时展示了这个算法如何去解决简单的同步问题。我们将会在未来的一篇paper里展示如何对这种方法进行扩展以用来解决任意的同步问题。</p>
+<p>该算法定义的全序关系有些随意。当系统与用户观察到的顺序不一致时会产生异常行为。该问题可以通过使用一个被正确同步的物理时钟系统来避免。我们的定理还展示了时钟可以被同步到怎样的程度。</p>
+<p>在分布式系统中，认识到事件的发生顺序是只是一个偏序关系是非常重要的。我们认为这个观点对理解所有多进程的系统非常有帮助。它可以帮助人们理解多进程系统中的基本问题，撇开那些用于解决这些问题的各种机制。</p>
 
-        <div class="article-info info-on-right">
-          
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -201,241 +276,117 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/06/18/%E3%80%8ATime-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System%E3%80%8B/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/06/15/%E4%B8%BA%E4%BB%80%E4%B9%88-%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F-%E5%A6%82%E6%AD%A4%E5%A5%BD%E7%94%A8%EF%BC%9F/" class="archive-article-date">
-  	<time datetime="2020-06-15T12:51:52.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-15</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2020/06/15/%E4%B8%BA%E4%BB%80%E4%B9%88-%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F-%E5%A6%82%E6%AD%A4%E5%A5%BD%E7%94%A8%EF%BC%9F/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">为什么[读时模式]如此好用？</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/06/15/%E4%B8%BA%E4%BB%80%E4%B9%88-%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F-%E5%A6%82%E6%AD%A4%E5%A5%BD%E7%94%A8%EF%BC%9F/">为什么[读时模式]如此好用？</a>
-    </h1>
+  
+  
+  <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+<script>
+  var cloudTieConfig = {
+    url: "http://yoursite.com/2020/06/18/%E3%80%8ATime-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System%E3%80%8B/", 
+    sourceId: "《Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System》",
+    productKey: "true",
+    target: "cloud-tie-wrapper"
+  };
+</script>
+<script src="//img1.cache.netease.com/f2e/tie/yun/sdk/loader.js"></script>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">翻译</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/06/15/%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%90%88%E7%90%86%E6%80%A7%E5%88%86%E6%9E%90/" class="archive-article-date">
-  	<time datetime="2020-06-15T05:14:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/06/15/%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%90%88%E7%90%86%E6%80%A7%E5%88%86%E6%9E%90/">读时模式的合理性分析</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">hadoop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/06/14/hadoop%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" class="archive-article-date">
-  	<time datetime="2020-06-14T13:47:17.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-14</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/06/14/hadoop%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">hadoop权威指南读书笔记</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">hadoop</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/06/14/%E8%BF%99%E6%98%AF%E4%B8%80%E7%AF%87%E9%9A%8F%E7%AC%94/" class="archive-article-date">
-  	<time datetime="2020-06-14T13:43:18.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-14</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/06/14/%E8%BF%99%E6%98%AF%E4%B8%80%E7%AF%87%E9%9A%8F%E7%AC%94/">这是一篇随笔</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">生活</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2020/06/14/kafka%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" class="archive-article-date">
-  	<time datetime="2020-06-14T13:25:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-14</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/06/14/kafka%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">kafka读书笔记</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">kafka</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -455,8 +406,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
