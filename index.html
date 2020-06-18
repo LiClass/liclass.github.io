@@ -274,7 +274,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>参考链接：<br><a href="https://www.ibmbigdatahub.com/blog/why-schema-read-so-useful" target="_blank" rel="noopener">https://www.ibmbigdatahub.com/blog/why-schema-read-so-useful</a><br><a href="http://www.zdingke.com/2019/08/27/schema-on-read%E4%B8%8Eschema-on-write/" target="_blank" rel="noopener">http://www.zdingke.com/2019/08/27/schema-on-read%E4%B8%8Eschema-on-write/</a></p>
+        <p>与读时模式对应的概念是写时模式，英文名称是schema on read 和 schema on write，通常(并非绝对)传统关系型数据库对应schema on write，大数据技术对应schema on read，存在即合理，为何大数据技术会摒弃流行多年的schema on write，那么本文来研究下schema on read的合理性。</p>
+<p>在传统数据库中，schema指的是数据库的组织和结构。一般声明了表、列、数据类型、视图、存储过程、关系等信息，其作用一般是为数据定性，赋予意义，使数据标准化，结构化，使数据更加的易用，提高用者的使用效率，而且结构化的数据比非结构化的数据更加容易理解。<br>所谓的schema on read和schema on write的区别在于schema的生成时机<br><br>写时模式：<br><img src="/source/images/2020-06-16/%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%90%88%E7%90%86%E6%80%A7%E5%88%86%E6%9E%90/image1.png" alt="写时模式"><br>数据结构化作用于数据源到数据汇聚存储之间，传统的关系型数据库就是使用此模式。<br><br>读时模式：<br><img src="/source/images/2020-06-16/%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%90%88%E7%90%86%E6%80%A7%E5%88%86%E6%9E%90/image2.png" alt="读时模式"><br>数据结构化作用于数据汇聚的存储层到数据使用方之间，数据先进行存储，然后在需要使用数据的时候再按需进行数据结构化<br><br>两种模式的优缺点这里有讲到：<a href="https://liclass.github.io/2020/06/15/%E4%B8%BA%E4%BB%80%E4%B9%88-%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F-%E5%A6%82%E6%AD%A4%E5%A5%BD%E7%94%A8%EF%BC%9F/" target="_blank" rel="noopener">为什么[读时模式]如此好用？</a><br><br>简单来说：使用大数据技术使用读时模式使得数据集使用更加灵活，可以存储非机构化数据，快速需求响应，脱离业务概念直面纯粹的数据存储需求<br>参考链接：<br><a href="https://www.ibmbigdatahub.com/blog/why-schema-read-so-useful" target="_blank" rel="noopener">https://www.ibmbigdatahub.com/blog/why-schema-read-so-useful</a><br><a href="http://www.zdingke.com/2019/08/27/schema-on-read%E4%B8%8Eschema-on-write/" target="_blank" rel="noopener">http://www.zdingke.com/2019/08/27/schema-on-read%E4%B8%8Eschema-on-write/</a></p>
 
       
 
