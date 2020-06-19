@@ -178,8 +178,6 @@
 <p>鉴于分布式计算节点独立的特点，时序一直是分布式系统绕不过的话题，本文是对分布式时间-始终问题方面被引用最多的论文之一进行翻译<br><br>原文链接：<a href="https://lamport.azurewebsites.net/pubs/time-clocks.pdf" target="_blank" rel="noopener">Time, Clocks, and the Ordering of Events in a Distributed System</a><br></p>
 <p>Abstract<br>本文讨论了在分布式系统中，一个事件发生在另一个事件之前的概念，并用它描述了事件的偏序关系。 给出了一种可以用于同步逻辑时钟系统的分布式算法，逻辑时钟系统可以用于确定事件的全序关系。 全序关系用以解决分布式中遇到的事件同步问题。 该方法被用于解决同步物理时钟，并且限定同步时钟的误差。</p>
         
-          <a class="article-more-a" href="/2020/06/18/%E3%80%8ATime-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System%E3%80%8B/#more">more >></a>
-        
       
 
       
@@ -263,8 +261,6 @@
         <p>原文链接 <a href="https://www.ibmbigdatahub.com/blog/why-schema-read-so-useful" target="_blank" rel="noopener">Why is Schema on Read So Useful?</a></p>
 <p>尽管我尽了最大的努力来引导，但在与客户的交流中还是会不断出现的一个问题：“我的系统拥有多大的数据量级我才需要使用大数据解决方案？” 如我先前所写，通常情况下，通过数据量来评估是否选择大数据技术是不合理的。尽管在某些情况下（例如，如果你像我们的某些客户一样明确知道要管理6PB以上的数据）是可以根据数据大小选择大数据解决方案，但是对于大多数的大数据项目都是在数据规模变大之前就需要灵活性。这些系统的灵活性体现在很多方面，但我想在这里重点介绍其中一个：“读时模式”。<br>在数据到达存储系统之前，数据的数据结构是确定的，并且我们在写入数据时将该结构应用于数据存储。我们大多数人都非常熟悉【写时模式】，我们使用传统的（仍然很重要）关系型数据库来存储具有特定结构的数据，通常我们认为它是解决问题的唯一方法。因此，为了大家改变这种想法，让我们来看一下这种方法的利弊。写时模式有一些不小的优点，包括：</p>
         
-          <a class="article-more-a" href="/2020/06/15/%E4%B8%BA%E4%BB%80%E4%B9%88-%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F-%E5%A6%82%E6%AD%A4%E5%A5%BD%E7%94%A8%EF%BC%9F/#more">more >></a>
-        
       
 
       
@@ -342,8 +338,6 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>与读时模式对应的概念是写时模式，英文名称是schema on read 和 schema on write，通常(并非绝对)传统关系型数据库对应schema on write，大数据技术对应schema on read，存在即合理，为何大数据技术会摒弃流行多年的schema on write，那么本文来研究下schema on read的合理性。</p>
-        
-          <a class="article-more-a" href="/2020/06/15/%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%90%88%E7%90%86%E6%80%A7%E5%88%86%E6%9E%90/#more">more >></a>
         
       
 
@@ -428,8 +422,6 @@
         <h2 id="与hadoop协同工作的处理模式"><a href="#与hadoop协同工作的处理模式" class="headerlink" title="与hadoop协同工作的处理模式"></a>与hadoop协同工作的处理模式</h2><h3 id="1、交互式sql"><a href="#1、交互式sql" class="headerlink" title="1、交互式sql"></a>1、交互式sql</h3><p>利用mr进行分发并使用一个分布式的查询引擎，使得在hadoop上获得sql查询低延迟响应(查询引擎)的同事还能保持对大数据集规模的可扩展性。这个引擎使用指定的总是开启守护进程或容器重用</p>
 <h3 id="2、迭代处理"><a href="#2、迭代处理" class="headerlink" title="2、迭代处理"></a>2、迭代处理</h3><p>许多算法逻辑，自身具有迭代性质，因此和那种每次迭代都从硬盘加载的方式相比，这种在内存中保存每次中间结果集的方式更加高效。mr的架构不允许这样，但是如果使用spark就会比较直接，它在使用数据集方面展现了之中高度探究的风格</p>
 <h3 id="3、流处理"><a href="#3、流处理" class="headerlink" title="3、流处理"></a>3、流处理</h3><p>例如storm、spark Streaming等在无边界数据流上运行实时、分布式的计算，并向hadoop存储系统或外部系统发布结果</p>
-        
-          <a class="article-more-a" href="/2020/06/14/hadoop%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/#more">more >></a>
         
       
 
@@ -595,8 +587,6 @@
 <blockquote>
 <p>3、如何确定分区个数</p>
 </blockquote>
-        
-          <a class="article-more-a" href="/2020/06/14/kafka%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/#more">more >></a>
         
       
 
