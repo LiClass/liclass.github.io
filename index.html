@@ -648,6 +648,123 @@
 
 
   
+    <article id="post-InstallShield-软件打包完整教程-含添加自定义依赖环境" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/03/10/InstallShield-%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B-%E5%90%AB%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BE%9D%E8%B5%96%E7%8E%AF%E5%A2%83/">InstallShield 软件打包完整教程(含添加自定义依赖环境)</a>
+    </h1>
+  
+
+        
+        <a href="/2018/03/10/InstallShield-%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B-%E5%90%AB%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BE%9D%E8%B5%96%E7%8E%AF%E5%A2%83/" class="archive-article-date">
+  	<time datetime="2018-03-10T08:49:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>任务说明：公司一个绿色版的软件，为安装部署是需要很多的环境依赖，如 DevExpress、.net4.5、WinRAR等，客户提出安装复杂，并且有漏装后无法启动等情况，现将绿色版转安装版，并将依赖环境集成进去。</p>
+</blockquote>
+<p>注：博主发现网上的教程大多是只讲了利用软件的引导部分实现简单的打包，少有对依赖环境的集成进行讲解，所以写下这一篇内容。 本人用的是汉化版，请使用英文版的自行对号入座即可。</p>
+<h2 id="1-软件打包说明"><a href="#1-软件打包说明" class="headerlink" title="1 软件打包说明"></a>1 软件打包说明</h2><h3 id="1-1-InstallShield的安装"><a href="#1-1-InstallShield的安装" class="headerlink" title="1.1 InstallShield的安装"></a>1.1 InstallShield的安装</h3><p>  InstallShield 2010安装方法网上有很多就不赘述了。</p>
+<h3 id="1-2-绿色版安装包的前期准备"><a href="#1-2-绿色版安装包的前期准备" class="headerlink" title="1.2 绿色版安装包的前期准备"></a>1.2 绿色版安装包的前期准备</h3><p>如果你需要打包的绿色版软件比较小（1G以内），或者文件结构比较简单，请忽视此段，由于我所要打包的软件体积比较大,最重要的是文件结构比较复杂，内部文件夹嵌套较多，且例如图片，xml等小文件较多，这样 InstallShield软件在打包导入的时候会非常慢，我尝试导入了10多个小时也没有结束就放弃了，所以在这里我建议对文件结构复杂的软件进行压缩处理，压缩方式请转RAR打包为自解压exe文件教程，得到一个单独的 EXE文件(自解压格式)后进行接下来的操作。</p>
+<h2 id="2-InstallShield打包完整流程"><a href="#2-InstallShield打包完整流程" class="headerlink" title="2 InstallShield打包完整流程"></a>2 InstallShield打包完整流程</h2><h3 id="2-1创建新的-Windows-Installer-InstallScript-MSI-Projcet"><a href="#2-1创建新的-Windows-Installer-InstallScript-MSI-Projcet" class="headerlink" title="2.1创建新的 Windows Installer | InstallScript MSI Projcet"></a>2.1创建新的 Windows Installer | InstallScript MSI Projcet</h3><p>这种类型的工程既有打包向导，又可以写一点脚本实现自定义操作，比较适合使用。<br><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image1.png" alt="image"></p>
+<h3 id="2-2-打包向导主界面"><a href="#2-2-打包向导主界面" class="headerlink" title="2.2 打包向导主界面"></a>2.2 打包向导主界面</h3><p>这里是InstallShield提供的向导主界面，我们是通过点击选择下方的动作条进行操作。</p>
+<p> <img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image2.png" alt="image"></p>
+<h3 id="2-3应用程序信息"><a href="#2-3应用程序信息" class="headerlink" title="2.3应用程序信息"></a>2.3应用程序信息</h3><p>公司信息，应用程序名称等等，这里没什么好说的。</p>
+<p><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image3.png" alt="image"></p>
+<h3 id="2-4-安装要求"><a href="#2-4-安装要求" class="headerlink" title="2.4 安装要求"></a>2.4 安装要求</h3><p>这里要说一下，大家可能会把这里理解为是安装依赖，但是这里与其说是依赖不如说是安装的前提或要求，这里勾选的环境 会在你双击setup后立即开始检测，并且在不满足条件时，只会对你做相应的提醒（如：请安装Adobe reader6！）后直接结束安装并退出，并没有引导用户安装的选项。明显与我们想将缺少的依赖环境集成引导加以安装的需求不相符，但是考虑到有些人会有这样的需求，也在接下来简单讲一下。</p>
+<h4 id="2-4-1-系统安装要求的勾选"><a href="#2-4-1-系统安装要求的勾选" class="headerlink" title="2.4.1 系统安装要求的勾选"></a>2.4.1 系统安装要求的勾选</h4><p>对于InstallShield软件已经列出的选项直接勾选就可以，不再赘述。</p>
+<p><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image4.png" alt="image"></p>
+<h4 id="2-4-2-自定义系统安装要求"><a href="#2-4-2-自定义系统安装要求" class="headerlink" title="2.4.2 自定义系统安装要求"></a>2.4.2 自定义系统安装要求</h4><p>对于InstallShield没有列出的我们可以通过左侧 创建一个自定义软件条件 来自行添加，如下图，你可以选择不同的满足条件（如 注册表某一项的值为XXX或 系统的某一路径下存在某一文件等等），这里的选项可以满足自定义几乎所有的安装要求。</p>
+<p><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image5.png" alt="image"></p>
+<h3 id="2-5安装体系结构"><a href="#2-5安装体系结构" class="headerlink" title="2.5安装体系结构"></a>2.5安装体系结构</h3><p>在这里可以新建多个Feature，每一个Feature代表一类安装软件，具体以例子说明，见下面第二张图。</p>
+<p><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image6.png" alt="image"></p>
+<p>这中类型的图片大家一定很熟悉，这是大多数软件点击自定义安装后出现的界面， 以下图为例，My sql数据库，MuseMail这两个选项就对应两个Feature，也就是上一幅图中的defaultFeature和New_Feature2这两个，然后属于musemail类里面的多个软件就被添加到MuseMail的Feature下，对于MuseMail-&gt;初始化工具，则要创建初始化工具的Feature，以此类推。</p>
+<p><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image7.gif" alt="image"></p>
+<h3 id="2-6应用程序文件"><a href="#2-6应用程序文件" class="headerlink" title="2.6应用程序文件"></a>2.6应用程序文件</h3><p>在此界面为每一个Feature添加文件。若有多个文件可选择添加文件夹。 这些Feature将是用户自定义安装时选择的对象。</p>
+<p><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image8.png" alt="image"></p>
+<h3 id="2-7-应用程序快捷方式"><a href="#2-7-应用程序快捷方式" class="headerlink" title="2.7 应用程序快捷方式"></a>2.7 应用程序快捷方式</h3><p>在这里添加在上一部分添加的文件中，每一个在你安装后的系统可能用到的文件的快捷方式，建议只添加必须的。右侧可以选择快捷方式出现的位置。<br><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image9.png" alt="image"></p>
+<h3 id="2-8应用程序注册表"><a href="#2-8应用程序注册表" class="headerlink" title="2.8应用程序注册表"></a>2.8应用程序注册表</h3><p>在这里可以选择应用程序想要写入注册表的信息，右键添加即可，比较简单。</p>
+<p><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image10.png" alt="image"></p>
+<h3 id="2-9安装本地化"><a href="#2-9安装本地化" class="headerlink" title="2.9安装本地化"></a>2.9安装本地化</h3><p>这一部分用来选择安装语言</p>
+<p><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image11.png" alt="image"></p>
+<h3 id="2-10构建安装"><a href="#2-10构建安装" class="headerlink" title="2.10构建安装"></a>2.10构建安装</h3><p>选择生成安装包。讲到这里比较简单的安装包已经可以打包好了，已经可以点击生成了，选择对应的生成类型即可。</p>
+<p><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image12.png" alt="image"></p>
+<h2 id="3-依赖环境集成"><a href="#3-依赖环境集成" class="headerlink" title="3 依赖环境集成"></a>3 依赖环境集成</h2><p>选择安装设计器界面—&gt;应用程序数据—&gt;可再分发，在这里可以选择系统所需的环境，并且在环境不满足的情况下弹出下载安装的提醒。</p>
+<p>InstallShield软件已经集成了部分依赖环境，可以勾选添加，并且可以在部署前下载，这样可以添加到安装包中，免除用户在安装过程中下载过程。但是InstallShield中不包含的怎么办呢，接下来来讲自定义依赖环境。</p>
+<p><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image13.png" alt="image"></p>
+<p>InstallShield提供的依赖环境是以 .prq文件的方式提供的，目录是    X:..\InstallShield\2010\SetupPrerequisites，在这里有很多.prq文件，自定义不存在的依赖环境就是在网上下载.prq文件，或自己创建</p>
+<p>常用prq文件地址</p>
+<p>如果下载不到要如何创建呢 下面是创建的例子</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">SetupPrereq</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">conditions</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">condition</span> <span class="attr">Type</span>=<span class="string">"2"</span> <span class="attr">Comparison</span>=<span class="string">"2"</span> <span class="attr">Path</span>=<span class="string">"HKEY_LOCAL_MACHINE\SOFTWARE\test"</span> <span class="attr">FileName</span>=<span class="string">"test"</span> <span class="attr">ReturnValue</span>=<span class="string">"1"</span>&gt;</span><span class="tag">&lt;/<span class="name">condition</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">conditions</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">operatingsystemconditions</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">operatingsystemcondition</span> <span class="attr">MajorVersion</span>=<span class="string">"5"</span> <span class="attr">MinorVersion</span>=<span class="string">"1"</span> <span class="attr">PlatformId</span>=<span class="string">"2"</span> <span class="attr">CSDVersion</span>=<span class="string">""</span> <span class="attr">Bits</span>=<span class="string">"1"</span> <span class="attr">ProductType</span>=<span class="string">"1"</span> <span class="attr">ServicePackMajorMin</span>=<span class="string">"2"</span>&gt;</span><span class="tag">&lt;/<span class="name">operatingsystemcondition</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">operatingsystemcondition</span> <span class="attr">MajorVersion</span>=<span class="string">"5"</span> <span class="attr">MinorVersion</span>=<span class="string">"2"</span> <span class="attr">PlatformId</span>=<span class="string">"2"</span> <span class="attr">CSDVersion</span>=<span class="string">""</span> <span class="attr">ProductType</span>=<span class="string">"2|3"</span>&gt;</span><span class="tag">&lt;/<span class="name">operatingsystemcondition</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">operatingsystemcondition</span> <span class="attr">MajorVersion</span>=<span class="string">"5"</span> <span class="attr">MinorVersion</span>=<span class="string">"2"</span> <span class="attr">PlatformId</span>=<span class="string">"2"</span> <span class="attr">CSDVersion</span>=<span class="string">""</span> <span class="attr">Bits</span>=<span class="string">"2"</span> <span class="attr">ProductType</span>=<span class="string">"1"</span>&gt;</span><span class="tag">&lt;/<span class="name">operatingsystemcondition</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">operatingsystemcondition</span> <span class="attr">MajorVersion</span>=<span class="string">"6"</span> <span class="attr">MinorVersion</span>=<span class="string">"0"</span> <span class="attr">PlatformId</span>=<span class="string">"2"</span> <span class="attr">CSDVersion</span>=<span class="string">""</span>&gt;</span><span class="tag">&lt;/<span class="name">operatingsystemcondition</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">operatingsystemcondition</span> <span class="attr">MajorVersion</span>=<span class="string">"6"</span> <span class="attr">MinorVersion</span>=<span class="string">"0"</span> <span class="attr">PlatformId</span>=<span class="string">"2"</span> <span class="attr">CSDVersion</span>=<span class="string">""</span> <span class="attr">ProductType</span>=<span class="string">"2|3"</span>&gt;</span><span class="tag">&lt;/<span class="name">operatingsystemcondition</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">operatingsystemcondition</span> <span class="attr">MajorVersion</span>=<span class="string">"6"</span> <span class="attr">MinorVersion</span>=<span class="string">"0"</span> <span class="attr">PlatformId</span>=<span class="string">"2"</span> <span class="attr">CSDVersion</span>=<span class="string">""</span> <span class="attr">ProductType</span>=<span class="string">"1"</span>&gt;</span><span class="tag">&lt;/<span class="name">operatingsystemcondition</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">operatingsystemconditions</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">files</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">file</span> <span class="attr">LocalFile</span>=<span class="string">"&lt;ISProductFolder&gt;\SetupPrerequisites\test\test 3.5\test3.5.exe"</span> <span class="attr">URL</span>=<span class="string">"http://download.test.com/download/test3.5.exe"</span> <span class="attr">CheckSum</span>=<span class="string">"D481CDA2625D9DD2731A00F482484D86"</span> <span class="attr">FileSize</span>=<span class="string">"0,242743296"</span>&gt;</span><span class="tag">&lt;/<span class="name">file</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">files</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">execute</span> <span class="attr">file</span>=<span class="string">"Helper.exe"</span> <span class="attr">cmdline</span>=<span class="string">"/p dotnetfx35.exe /l 1033 /v "</span>/<span class="attr">q</span> /<span class="attr">norestart</span>"" <span class="attr">cmdlinesilent</span>=<span class="string">"/p dotnetfx35.exe /l 1033 /v "</span>/<span class="attr">q</span> /<span class="attr">norestart</span>"" <span class="attr">returncodetoreboot</span>=<span class="string">"1641,3010"</span> <span class="attr">requiresmsiengine</span>=<span class="string">"1"</span>&gt;</span><span class="tag">&lt;/<span class="name">execute</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">properties</span> <span class="attr">Id</span>=<span class="string">"&#123;074EE22F-2485-4FED-83D1-AAC36C3D9ED0&#125;"</span> <span class="attr">Description</span>=<span class="string">"This prerequisite installs the .NET Framework 3.5 Service Pack 1 full package."</span> <span class="attr">AltPrqURL</span>=<span class="string">"http://saturn.installshield.com/is/prerequisites/microsoft .net framework 3.5 sp1.prq"</span>&gt;</span><span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">behavior</span> <span class="attr">Reboot</span>=<span class="string">"2"</span>&gt;</span><span class="tag">&lt;/<span class="name">behavior</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">SetupPrereq</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<p>condition ：<br><br>     该选项是说明当注册表 HKEY_LOCAL_MACHINE\SOFTWARE\test 路径的 指定项 test 的值为1 则是说明此环境符合要求，若不为1 则提醒安装指定程序。</p>
+<p>file LocalFile ：<br><br>用来说明下载的文件存储文位置：将该prq文件拷贝至X:..\InstallShield\2010\SetupPrerequisites 后重启InstallShield软件后你会发现在X:..\InstallShield\2010\SetupPrerequisites 文件夹下出现新的文件夹目录\test\test 3.5目录，将想要安装的 test3.5.exe 软件拷贝至该目录下，后再次重启软件（其实也不知道要不要重启，只是觉得应该要重启的）然后就可以在本部分图一中找到并且勾选了。</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">InstallShield</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">工具</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2018/03/10/InstallShield-%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B-%E5%90%AB%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BE%9D%E8%B5%96%E7%8E%AF%E5%A2%83/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
   
 
 
@@ -759,6 +876,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">架构</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">InstallShield</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">工具</a>
               </li>
             
             <div class="clearfix"></div>
