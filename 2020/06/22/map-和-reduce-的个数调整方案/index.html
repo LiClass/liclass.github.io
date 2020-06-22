@@ -6,34 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>InstallShield 软件打包完整教程(含添加自定义依赖环境) | liclass的博客</title>
+  <title>map 和 reduce 的个数调整方案 | liclass的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="任务说明：公司一个绿色版的软件，为安装部署是需要很多的环境依赖，如 DevExpress、.net4.5、WinRAR等，客户提出安装复杂，并且有漏装后无法启动等情况，现将绿色版转安装版，并将依赖环境集成进去。  注：博主发现网上的教程大多是只讲了利用软件的引导部分实现简单的打包，少有对依赖环境的集成进行讲解，所以写下这一篇内容。 本人用的是汉化版，请使用英文版的自行对号入座即可。">
+  <meta name="description" content="1、map数量的调整map的数量不能通过参数直接调整，一般来讲通过对split处理大小进行间接调整 我们该设置多少个map多少个reduce才合适？　　map数普遍是通过执行时长来确认的，至少应当保证每个map执行时长在1分钟以上，太短的话意味着大量重复的jvm启用和销毁。具体设置要根据具体任务来处理，有些任务占用cpu大，有些占用io大。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="InstallShield 软件打包完整教程(含添加自定义依赖环境)">
-<meta property="og:url" content="http://yoursite.com/2018/03/10/InstallShield-%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B-%E5%90%AB%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BE%9D%E8%B5%96%E7%8E%AF%E5%A2%83/index.html">
+<meta property="og:title" content="map 和 reduce 的个数调整方案">
+<meta property="og:url" content="http://yoursite.com/2020/06/22/map-%E5%92%8C-reduce-%E7%9A%84%E4%B8%AA%E6%95%B0%E8%B0%83%E6%95%B4%E6%96%B9%E6%A1%88/index.html">
 <meta property="og:site_name" content="liclass的博客">
-<meta property="og:description" content="任务说明：公司一个绿色版的软件，为安装部署是需要很多的环境依赖，如 DevExpress、.net4.5、WinRAR等，客户提出安装复杂，并且有漏装后无法启动等情况，现将绿色版转安装版，并将依赖环境集成进去。  注：博主发现网上的教程大多是只讲了利用软件的引导部分实现简单的打包，少有对依赖环境的集成进行讲解，所以写下这一篇内容。 本人用的是汉化版，请使用英文版的自行对号入座即可。">
-<meta property="og:image" content="http://yoursite.com/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image1.png">
-<meta property="og:image" content="http://yoursite.com/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image2.png">
-<meta property="og:image" content="http://yoursite.com/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image3.png">
-<meta property="og:image" content="http://yoursite.com/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image4.png">
-<meta property="og:image" content="http://yoursite.com/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image5.png">
-<meta property="og:image" content="http://yoursite.com/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image6.png">
-<meta property="og:image" content="http://yoursite.com/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image7.gif">
-<meta property="og:image" content="http://yoursite.com/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image8.png">
-<meta property="og:image" content="http://yoursite.com/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image9.png">
-<meta property="og:image" content="http://yoursite.com/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image10.png">
-<meta property="og:image" content="http://yoursite.com/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image11.png">
-<meta property="og:image" content="http://yoursite.com/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image12.png">
-<meta property="og:image" content="http://yoursite.com/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image13.png">
-<meta property="article:published_time" content="2018-03-10T08:49:47.000Z">
-<meta property="article:modified_time" content="2020-06-19T09:18:00.839Z">
+<meta property="og:description" content="1、map数量的调整map的数量不能通过参数直接调整，一般来讲通过对split处理大小进行间接调整 我们该设置多少个map多少个reduce才合适？　　map数普遍是通过执行时长来确认的，至少应当保证每个map执行时长在1分钟以上，太短的话意味着大量重复的jvm启用和销毁。具体设置要根据具体任务来处理，有些任务占用cpu大，有些占用io大。">
+<meta property="article:published_time" content="2020-06-22T14:23:16.000Z">
+<meta property="article:modified_time" content="2020-06-22T14:26:36.771Z">
 <meta property="article:author" content="liclass">
-<meta property="article:tag" content="InstallShield">
-<meta property="article:tag" content="工具">
+<meta property="article:tag" content="大数据">
+<meta property="article:tag" content="笔记">
+<meta property="article:tag" content="MapReduce">
+<meta property="article:tag" content="hive">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://yoursite.com/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image1.png">
   
     <link rel="alternative" href="/atom.xml" title="liclass的博客" type="application/atom+xml">
   
@@ -169,68 +157,63 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-InstallShield-软件打包完整教程-含添加自定义依赖环境" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-map-和-reduce-的个数调整方案" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      InstallShield 软件打包完整教程(含添加自定义依赖环境)
+      map 和 reduce 的个数调整方案
     </h1>
   
 
         
-        <a href="/2018/03/10/InstallShield-%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B-%E5%90%AB%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BE%9D%E8%B5%96%E7%8E%AF%E5%A2%83/" class="archive-article-date">
-  	<time datetime="2018-03-10T08:49:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-03-10</time>
+        <a href="/2020/06/22/map-%E5%92%8C-reduce-%E7%9A%84%E4%B8%AA%E6%95%B0%E8%B0%83%E6%95%B4%E6%96%B9%E6%A1%88/" class="archive-article-date">
+  	<time datetime="2020-06-22T14:23:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-22</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>任务说明：公司一个绿色版的软件，为安装部署是需要很多的环境依赖，如 DevExpress、.net4.5、WinRAR等，客户提出安装复杂，并且有漏装后无法启动等情况，现将绿色版转安装版，并将依赖环境集成进去。</p>
-</blockquote>
-<p>注：博主发现网上的教程大多是只讲了利用软件的引导部分实现简单的打包，少有对依赖环境的集成进行讲解，所以写下这一篇内容。 本人用的是汉化版，请使用英文版的自行对号入座即可。</p>
-<a id="more"></a>
+        <h3 id="1、map数量的调整"><a href="#1、map数量的调整" class="headerlink" title="1、map数量的调整"></a>1、map数量的调整</h3><p>map的数量不能通过参数直接调整，一般来讲通过对split处理大小进行间接调整</p>
+<h4 id="我们该设置多少个map多少个reduce才合适？"><a href="#我们该设置多少个map多少个reduce才合适？" class="headerlink" title="我们该设置多少个map多少个reduce才合适？"></a>我们该设置多少个map多少个reduce才合适？</h4><p>　　map数普遍是通过执行时长来确认的，至少应当保证每个map执行时长在1分钟以上，太短的话意味着大量重复的jvm启用和销毁。具体设置要根据具体任务来处理，有些任务占用cpu大，有些占用io大。</p>
+ <a id="more"></a>
 
-<h2 id="1-软件打包说明"><a href="#1-软件打包说明" class="headerlink" title="1 软件打包说明"></a>1 软件打包说明</h2><h3 id="1-1-InstallShield的安装"><a href="#1-1-InstallShield的安装" class="headerlink" title="1.1 InstallShield的安装"></a>1.1 InstallShield的安装</h3><p>  InstallShield 2010安装方法网上有很多就不赘述了。</p>
-<h3 id="1-2-绿色版安装包的前期准备"><a href="#1-2-绿色版安装包的前期准备" class="headerlink" title="1.2 绿色版安装包的前期准备"></a>1.2 绿色版安装包的前期准备</h3><p>如果你需要打包的绿色版软件比较小（1G以内），或者文件结构比较简单，请忽视此段，由于我所要打包的软件体积比较大,最重要的是文件结构比较复杂，内部文件夹嵌套较多，且例如图片，xml等小文件较多，这样 InstallShield软件在打包导入的时候会非常慢，我尝试导入了10多个小时也没有结束就放弃了，所以在这里我建议对文件结构复杂的软件进行压缩处理，压缩方式请转RAR打包为自解压exe文件教程，得到一个单独的 EXE文件(自解压格式)后进行接下来的操作。</p>
-<h2 id="2-InstallShield打包完整流程"><a href="#2-InstallShield打包完整流程" class="headerlink" title="2 InstallShield打包完整流程"></a>2 InstallShield打包完整流程</h2><h3 id="2-1创建新的-Windows-Installer-InstallScript-MSI-Projcet"><a href="#2-1创建新的-Windows-Installer-InstallScript-MSI-Projcet" class="headerlink" title="2.1创建新的 Windows Installer | InstallScript MSI Projcet"></a>2.1创建新的 Windows Installer | InstallScript MSI Projcet</h3><p>这种类型的工程既有打包向导，又可以写一点脚本实现自定义操作，比较适合使用。<br><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image1.png" alt="image"></p>
-<h3 id="2-2-打包向导主界面"><a href="#2-2-打包向导主界面" class="headerlink" title="2.2 打包向导主界面"></a>2.2 打包向导主界面</h3><p>这里是InstallShield提供的向导主界面，我们是通过点击选择下方的动作条进行操作。</p>
-<p> <img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image2.png" alt="image"></p>
-<h3 id="2-3应用程序信息"><a href="#2-3应用程序信息" class="headerlink" title="2.3应用程序信息"></a>2.3应用程序信息</h3><p>公司信息，应用程序名称等等，这里没什么好说的。</p>
-<p><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image3.png" alt="image"></p>
-<h3 id="2-4-安装要求"><a href="#2-4-安装要求" class="headerlink" title="2.4 安装要求"></a>2.4 安装要求</h3><p>这里要说一下，大家可能会把这里理解为是安装依赖，但是这里与其说是依赖不如说是安装的前提或要求，这里勾选的环境 会在你双击setup后立即开始检测，并且在不满足条件时，只会对你做相应的提醒（如：请安装Adobe reader6！）后直接结束安装并退出，并没有引导用户安装的选项。明显与我们想将缺少的依赖环境集成引导加以安装的需求不相符，但是考虑到有些人会有这样的需求，也在接下来简单讲一下。</p>
-<h4 id="2-4-1-系统安装要求的勾选"><a href="#2-4-1-系统安装要求的勾选" class="headerlink" title="2.4.1 系统安装要求的勾选"></a>2.4.1 系统安装要求的勾选</h4><p>对于InstallShield软件已经列出的选项直接勾选就可以，不再赘述。</p>
-<p><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image4.png" alt="image"></p>
-<h4 id="2-4-2-自定义系统安装要求"><a href="#2-4-2-自定义系统安装要求" class="headerlink" title="2.4.2 自定义系统安装要求"></a>2.4.2 自定义系统安装要求</h4><p>对于InstallShield没有列出的我们可以通过左侧 创建一个自定义软件条件 来自行添加，如下图，你可以选择不同的满足条件（如 注册表某一项的值为XXX或 系统的某一路径下存在某一文件等等），这里的选项可以满足自定义几乎所有的安装要求。</p>
-<p><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image5.png" alt="image"></p>
-<h3 id="2-5安装体系结构"><a href="#2-5安装体系结构" class="headerlink" title="2.5安装体系结构"></a>2.5安装体系结构</h3><p>在这里可以新建多个Feature，每一个Feature代表一类安装软件，具体以例子说明，见下面第二张图。</p>
-<p><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image6.png" alt="image"></p>
-<p>这中类型的图片大家一定很熟悉，这是大多数软件点击自定义安装后出现的界面， 以下图为例，My sql数据库，MuseMail这两个选项就对应两个Feature，也就是上一幅图中的defaultFeature和New_Feature2这两个，然后属于musemail类里面的多个软件就被添加到MuseMail的Feature下，对于MuseMail-&gt;初始化工具，则要创建初始化工具的Feature，以此类推。</p>
-<p><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image7.gif" alt="image"></p>
-<h3 id="2-6应用程序文件"><a href="#2-6应用程序文件" class="headerlink" title="2.6应用程序文件"></a>2.6应用程序文件</h3><p>在此界面为每一个Feature添加文件。若有多个文件可选择添加文件夹。 这些Feature将是用户自定义安装时选择的对象。</p>
-<p><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image8.png" alt="image"></p>
-<h3 id="2-7-应用程序快捷方式"><a href="#2-7-应用程序快捷方式" class="headerlink" title="2.7 应用程序快捷方式"></a>2.7 应用程序快捷方式</h3><p>在这里添加在上一部分添加的文件中，每一个在你安装后的系统可能用到的文件的快捷方式，建议只添加必须的。右侧可以选择快捷方式出现的位置。<br><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image9.png" alt="image"></p>
-<h3 id="2-8应用程序注册表"><a href="#2-8应用程序注册表" class="headerlink" title="2.8应用程序注册表"></a>2.8应用程序注册表</h3><p>在这里可以选择应用程序想要写入注册表的信息，右键添加即可，比较简单。</p>
-<p><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image10.png" alt="image"></p>
-<h3 id="2-9安装本地化"><a href="#2-9安装本地化" class="headerlink" title="2.9安装本地化"></a>2.9安装本地化</h3><p>这一部分用来选择安装语言</p>
-<p><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image11.png" alt="image"></p>
-<h3 id="2-10构建安装"><a href="#2-10构建安装" class="headerlink" title="2.10构建安装"></a>2.10构建安装</h3><p>选择生成安装包。讲到这里比较简单的安装包已经可以打包好了，已经可以点击生成了，选择对应的生成类型即可。</p>
-<p><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image12.png" alt="image"></p>
-<h2 id="3-依赖环境集成"><a href="#3-依赖环境集成" class="headerlink" title="3 依赖环境集成"></a>3 依赖环境集成</h2><p>选择安装设计器界面—&gt;应用程序数据—&gt;可再分发，在这里可以选择系统所需的环境，并且在环境不满足的情况下弹出下载安装的提醒。</p>
-<p>InstallShield软件已经集成了部分依赖环境，可以勾选添加，并且可以在部署前下载，这样可以添加到安装包中，免除用户在安装过程中下载过程。但是InstallShield中不包含的怎么办呢，接下来来讲自定义依赖环境。</p>
-<p><img src="/images/2018-03-10/InstallShield%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B/image13.png" alt="image"></p>
-<p>InstallShield提供的依赖环境是以 .prq文件的方式提供的，目录是    X:..\InstallShield\2010\SetupPrerequisites，在这里有很多.prq文件，自定义不存在的依赖环境就是在网上下载.prq文件，或自己创建</p>
-<p>常用prq文件地址</p>
-<p>如果下载不到要如何创建呢 下面是创建的例子</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">SetupPrereq</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">conditions</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">condition</span> <span class="attr">Type</span>=<span class="string">"2"</span> <span class="attr">Comparison</span>=<span class="string">"2"</span> <span class="attr">Path</span>=<span class="string">"HKEY_LOCAL_MACHINE\SOFTWARE\test"</span> <span class="attr">FileName</span>=<span class="string">"test"</span> <span class="attr">ReturnValue</span>=<span class="string">"1"</span>&gt;</span><span class="tag">&lt;/<span class="name">condition</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">conditions</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">operatingsystemconditions</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">operatingsystemcondition</span> <span class="attr">MajorVersion</span>=<span class="string">"5"</span> <span class="attr">MinorVersion</span>=<span class="string">"1"</span> <span class="attr">PlatformId</span>=<span class="string">"2"</span> <span class="attr">CSDVersion</span>=<span class="string">""</span> <span class="attr">Bits</span>=<span class="string">"1"</span> <span class="attr">ProductType</span>=<span class="string">"1"</span> <span class="attr">ServicePackMajorMin</span>=<span class="string">"2"</span>&gt;</span><span class="tag">&lt;/<span class="name">operatingsystemcondition</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">operatingsystemcondition</span> <span class="attr">MajorVersion</span>=<span class="string">"5"</span> <span class="attr">MinorVersion</span>=<span class="string">"2"</span> <span class="attr">PlatformId</span>=<span class="string">"2"</span> <span class="attr">CSDVersion</span>=<span class="string">""</span> <span class="attr">ProductType</span>=<span class="string">"2|3"</span>&gt;</span><span class="tag">&lt;/<span class="name">operatingsystemcondition</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">operatingsystemcondition</span> <span class="attr">MajorVersion</span>=<span class="string">"5"</span> <span class="attr">MinorVersion</span>=<span class="string">"2"</span> <span class="attr">PlatformId</span>=<span class="string">"2"</span> <span class="attr">CSDVersion</span>=<span class="string">""</span> <span class="attr">Bits</span>=<span class="string">"2"</span> <span class="attr">ProductType</span>=<span class="string">"1"</span>&gt;</span><span class="tag">&lt;/<span class="name">operatingsystemcondition</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">operatingsystemcondition</span> <span class="attr">MajorVersion</span>=<span class="string">"6"</span> <span class="attr">MinorVersion</span>=<span class="string">"0"</span> <span class="attr">PlatformId</span>=<span class="string">"2"</span> <span class="attr">CSDVersion</span>=<span class="string">""</span>&gt;</span><span class="tag">&lt;/<span class="name">operatingsystemcondition</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">operatingsystemcondition</span> <span class="attr">MajorVersion</span>=<span class="string">"6"</span> <span class="attr">MinorVersion</span>=<span class="string">"0"</span> <span class="attr">PlatformId</span>=<span class="string">"2"</span> <span class="attr">CSDVersion</span>=<span class="string">""</span> <span class="attr">ProductType</span>=<span class="string">"2|3"</span>&gt;</span><span class="tag">&lt;/<span class="name">operatingsystemcondition</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">operatingsystemcondition</span> <span class="attr">MajorVersion</span>=<span class="string">"6"</span> <span class="attr">MinorVersion</span>=<span class="string">"0"</span> <span class="attr">PlatformId</span>=<span class="string">"2"</span> <span class="attr">CSDVersion</span>=<span class="string">""</span> <span class="attr">ProductType</span>=<span class="string">"1"</span>&gt;</span><span class="tag">&lt;/<span class="name">operatingsystemcondition</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">operatingsystemconditions</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">files</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">file</span> <span class="attr">LocalFile</span>=<span class="string">"&lt;ISProductFolder&gt;\SetupPrerequisites\test\test 3.5\test3.5.exe"</span> <span class="attr">URL</span>=<span class="string">"http://download.test.com/download/test3.5.exe"</span> <span class="attr">CheckSum</span>=<span class="string">"D481CDA2625D9DD2731A00F482484D86"</span> <span class="attr">FileSize</span>=<span class="string">"0,242743296"</span>&gt;</span><span class="tag">&lt;/<span class="name">file</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">files</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">execute</span> <span class="attr">file</span>=<span class="string">"Helper.exe"</span> <span class="attr">cmdline</span>=<span class="string">"/p dotnetfx35.exe /l 1033 /v "</span>/<span class="attr">q</span> /<span class="attr">norestart</span>"" <span class="attr">cmdlinesilent</span>=<span class="string">"/p dotnetfx35.exe /l 1033 /v "</span>/<span class="attr">q</span> /<span class="attr">norestart</span>"" <span class="attr">returncodetoreboot</span>=<span class="string">"1641,3010"</span> <span class="attr">requiresmsiengine</span>=<span class="string">"1"</span>&gt;</span><span class="tag">&lt;/<span class="name">execute</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">properties</span> <span class="attr">Id</span>=<span class="string">"&#123;074EE22F-2485-4FED-83D1-AAC36C3D9ED0&#125;"</span> <span class="attr">Description</span>=<span class="string">"This prerequisite installs the .NET Framework 3.5 Service Pack 1 full package."</span> <span class="attr">AltPrqURL</span>=<span class="string">"http://saturn.installshield.com/is/prerequisites/microsoft .net framework 3.5 sp1.prq"</span>&gt;</span><span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">behavior</span> <span class="attr">Reboot</span>=<span class="string">"2"</span>&gt;</span><span class="tag">&lt;/<span class="name">behavior</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">SetupPrereq</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-<p>condition ：<br><br>     该选项是说明当注册表 HKEY_LOCAL_MACHINE\SOFTWARE\test 路径的 指定项 test 的值为1 则是说明此环境符合要求，若不为1 则提醒安装指定程序。</p>
-<p>file LocalFile ：<br><br>用来说明下载的文件存储文位置：将该prq文件拷贝至X:..\InstallShield\2010\SetupPrerequisites 后重启InstallShield软件后你会发现在X:..\InstallShield\2010\SetupPrerequisites 文件夹下出现新的文件夹目录\test\test 3.5目录，将想要安装的 test3.5.exe 软件拷贝至该目录下，后再次重启软件（其实也不知道要不要重启，只是觉得应该要重启的）然后就可以在本部分图一中找到并且勾选了。</p>
+<p> hive中默认的hive.input.format是org.apache.hadoop.hive.ql.io.CombineHiveInputFormat</p>
+<p>对于combineHiveInputFormat,它的输入的map数量由三个配置决定：</p>
+<ul>
+<li><p>mapred.min.split.size.per.node， 一个节点上split的至少的大小</p>
+</li>
+<li><p>mapred.min.split.size.per.rack 一个交换机下split至少的大小</p>
+</li>
+<li><p>mapred.max.split.size 一个split最大的大小</p>
+</li>
+</ul>
+<p>它的主要思路是把输入目录下的大文件分成多个map的输入, 并合并小文件, 做为一个map的输入. 具体的原理是下述三步:</p>
+<ul>
+<li><p>a、根据输入目录下的每个文件,如果其长度超过mapred.max.split.size,以block为单位分成多个split(一个split是一个map的输入),每个split的长度都大于mapred.max.split.size, 因为以block为单位, 因此也会大于blockSize, 此文件剩下的长度如果大于mapred.min.split.size.per.node, 则生成一个split, 否则先暂时保留.</p>
+</li>
+<li><p>b、现在剩下的都是一些长度效短的碎片,把每个rack下碎片合并, 只要长度超过mapred.max.split.size就合并成一个split, 最后如果剩下的碎片比mapred.min.split.size.per.rack大, 就合并成一个split, 否则暂时保留.</p>
+</li>
+<li><p>c、把不同rack下的碎片合并, 只要长度超过mapred.max.split.size就合并成一个split, 剩下的碎片无论长度, 合并成一个split.</p>
+</li>
+</ul>
+<p>举例: mapred.max.split.size=1000</p>
+<p>mapred.min.split.size.per.node=300</p>
+<p>mapred.min.split.size.per.rack=100</p>
+<p>输入目录下五个文件,rack1下三个文件,长度为2050,1499,10, rack2下两个文件,长度为1010,80. 另外blockSize为500.</p>
+<p>经过第一步, 生成五个split: 1000,1000,1000,499,1000. 剩下的碎片为rack1下:50,10; rack2下10:80</p>
+<p>由于两个rack下的碎片和都不超过100, 所以经过第二步, split和碎片都没有变化.</p>
+<p>第三步,合并四个碎片成一个split, 长度为150.</p>
+<p>如果要减少map数量, 可以调大mapred.max.split.size, 否则调小即可.</p>
+<p>其特点是: 一个块至多作为一个map的输入，一个文件可能有多个块，一个文件可能因为块多分给做为不同map的输入， 一个map可能处理多个块，可能处理多个文件。</p>
+<h3 id="2、reduce数量的调整"><a href="#2、reduce数量的调整" class="headerlink" title="2、reduce数量的调整"></a>2、reduce数量的调整</h3><p>reduce数量由以下三个参数决定，</p>
+<p>mapred.reduce.tasks(强制指定reduce的任务数量)</p>
+<p>hive.exec.reducers.bytes.per.reducer（每个reduce任务处理的数据量，默认为1000^3=1G）</p>
+<p>hive.exec.reducers.max（每个任务最大的reduce数，默认为999）</p>
+<p>计算reducer数的公式很简单N=min( hive.exec.reducers.max ，总输入数据量/ hive.exec.reducers.bytes.per.reducer )</p>
 
       
 
@@ -244,11 +227,19 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">InstallShield</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">工具</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">笔记</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">MapReduce</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">hive</a>
         		</li>
       		
 		</ul>
@@ -304,7 +295,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2018/03/10/InstallShield-%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B-%E5%90%AB%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BE%9D%E8%B5%96%E7%8E%AF%E5%A2%83/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/06/22/map-%E5%92%8C-reduce-%E7%9A%84%E4%B8%AA%E6%95%B0%E8%B0%83%E6%95%B4%E6%96%B9%E6%A1%88/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -318,15 +309,11 @@
   
 <nav id="article-nav">
   
-    <a href="/2020/06/14/kafka%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          kafka读书笔记
-        
-      </div>
-    </a>
   
+    <a href="/2020/06/20/%E5%8F%91%E6%8C%A5%E8%87%AA%E5%B7%B1%E7%9A%84%E4%BB%B7%E5%80%BC%EF%BC%8C%E7%88%B1%E8%87%AA%E5%B7%B1%E7%88%B1%E7%9A%84%E4%BA%BA%EF%BC%8C%E5%9D%9A%E5%BC%BA%E7%9A%84%E5%BA%94%E5%AF%B9%E7%94%9F%E5%91%BD%E7%9A%84%E8%80%83%E9%A2%98%EF%BC%8C%E5%93%AA%E6%80%95%E6%98%AF%E9%80%81%E5%91%BD%E9%A2%98/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">发挥自己的价值，爱自己爱的人，正确的应对生命的考题，哪怕是送命题</div>
+      <i class="icon-circle-right"></i>
+    </a>
   
 </nav>
 
@@ -355,8 +342,8 @@
   <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
 <script>
   var cloudTieConfig = {
-    url: "http://yoursite.com/2018/03/10/InstallShield-%E8%BD%AF%E4%BB%B6%E6%89%93%E5%8C%85%E5%AE%8C%E6%95%B4%E6%95%99%E7%A8%8B-%E5%90%AB%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89%E4%BE%9D%E8%B5%96%E7%8E%AF%E5%A2%83/", 
-    sourceId: "InstallShield-软件打包完整教程-含添加自定义依赖环境",
+    url: "http://yoursite.com/2020/06/22/map-%E5%92%8C-reduce-%E7%9A%84%E4%B8%AA%E6%95%B0%E8%B0%83%E6%95%B4%E6%96%B9%E6%A1%88/", 
+    sourceId: "map-和-reduce-的个数调整方案",
     productKey: "true",
     target: "cloud-tie-wrapper"
   };
