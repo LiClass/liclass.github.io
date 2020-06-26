@@ -154,6 +154,78 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-hdfs知识点梳理-持续更新" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/06/26/hdfs%E7%9F%A5%E8%AF%86%E7%82%B9%E6%A2%B3%E7%90%86-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0/">hdfs知识点梳理(持续更新)</a>
+    </h1>
+  
+
+        
+        <a href="/2020/06/26/hdfs%E7%9F%A5%E8%AF%86%E7%82%B9%E6%A2%B3%E7%90%86-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0/" class="archive-article-date">
+  	<time datetime="2020-06-26T10:34:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-HDFS数据写入流程？"><a href="#1-HDFS数据写入流程？" class="headerlink" title="1.HDFS数据写入流程？"></a>1.HDFS数据写入流程？</h3><ol>
+<li>客户端向namenode发送请求,询问是否可以上传文件</li>
+<li>namenode判断磁盘剩余量是否充足,客户端是否有权限,然后将结果返回</li>
+<li>客户端接收到namenode发来上传的指令,然后问namenode存在哪</li>
+<li>客户端拿到存储路径开始进行流水线的写入,将第一块副本按照一点的规则放在hdfs一个节点a中,a建立管道传给b(RPC调用),b传给c,管道建立完成后将结果逐级返回客户端</li>
+<li>客户端开始进行流水线复制</li>
+<li>客户端将储存结果提交给namenode,namenode储存元数据信息</li>
+<li>客户端询问namenode下一块数据的存放位置<h3 id="2-HDFS数据读取流程？"><a href="#2-HDFS数据读取流程？" class="headerlink" title="2.HDFS数据读取流程？"></a>2.HDFS数据读取流程？</h3>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+     
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/06/26/hdfs%E7%9F%A5%E8%AF%86%E7%82%B9%E6%A2%B3%E7%90%86-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Why-Presto-is-faster-than-Spark-SQL" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -873,95 +945,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2020/06/14/%E8%BF%99%E6%98%AF%E4%B8%80%E7%AF%87%E9%9A%8F%E7%AC%94/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-kafka读书笔记" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/06/14/kafka%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">kafka读书笔记</a>
-    </h1>
-  
-
-        
-        <a href="/2020/06/14/kafka%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" class="archive-article-date">
-  	<time datetime="2020-06-14T13:25:33.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>1、一个主题包含多个分区，无法在整个主题范围内保证消息的顺序，但是可以保证在单个分区的顺序<br>2、某些情况下，生产者会把消息直接写到指定的分区。通常通过消息建和分区器来实现，分区器为键生成一个散列值，并将其映射到指定的分区，可以保证包含同一个键的全部消息会被写到同一个分区</p>
-</blockquote>
-<blockquote>
-<p>3、如何确定分区个数</p>
-</blockquote>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">kafka</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-     
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/06/14/kafka%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">展开全文 >></a>
         </p>
       
 

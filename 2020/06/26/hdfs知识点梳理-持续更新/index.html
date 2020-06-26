@@ -6,16 +6,16 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Why Presto is faster than Spark SQL | liclass的博客</title>
+  <title>hdfs知识点梳理(持续更新) | liclass的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="https:&#x2F;&#x2F;stackoverflow.com&#x2F;questions&#x2F;50014017&#x2F;why-presto-is-faster-than-spark-sql">
+  <meta name="description" content="1.HDFS数据写入流程？ 客户端向namenode发送请求,询问是否可以上传文件 namenode判断磁盘剩余量是否充足,客户端是否有权限,然后将结果返回 客户端接收到namenode发来上传的指令,然后问namenode存在哪 客户端拿到存储路径开始进行流水线的写入,将第一块副本按照一点的规则放在hdfs一个节点a中,a建立管道传给b(RPC调用),b传给c,管道建立完成后将结果逐级返回客户端">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Why Presto is faster than Spark SQL">
-<meta property="og:url" content="http://yoursite.com/2020/06/23/Why-Presto-is-faster-than-Spark-SQL/index.html">
+<meta property="og:title" content="hdfs知识点梳理(持续更新)">
+<meta property="og:url" content="http://yoursite.com/2020/06/26/hdfs%E7%9F%A5%E8%AF%86%E7%82%B9%E6%A2%B3%E7%90%86-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0/index.html">
 <meta property="og:site_name" content="liclass的博客">
-<meta property="og:description" content="https:&#x2F;&#x2F;stackoverflow.com&#x2F;questions&#x2F;50014017&#x2F;why-presto-is-faster-than-spark-sql">
-<meta property="article:published_time" content="2020-06-23T09:09:34.000Z">
-<meta property="article:modified_time" content="2020-06-24T06:18:33.637Z">
+<meta property="og:description" content="1.HDFS数据写入流程？ 客户端向namenode发送请求,询问是否可以上传文件 namenode判断磁盘剩余量是否充足,客户端是否有权限,然后将结果返回 客户端接收到namenode发来上传的指令,然后问namenode存在哪 客户端拿到存储路径开始进行流水线的写入,将第一块副本按照一点的规则放在hdfs一个节点a中,a建立管道传给b(RPC调用),b传给c,管道建立完成后将结果逐级返回客户端">
+<meta property="article:published_time" content="2020-06-26T10:34:55.000Z">
+<meta property="article:modified_time" content="2020-06-26T12:03:52.333Z">
 <meta property="article:author" content="liclass">
 <meta property="article:tag" content="大数据、数据仓库、java、hive、kafka">
 <meta name="twitter:card" content="summary">
@@ -154,27 +154,47 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Why-Presto-is-faster-than-Spark-SQL" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-hdfs知识点梳理-持续更新" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      Why Presto is faster than Spark SQL
+      hdfs知识点梳理(持续更新)
     </h1>
   
 
         
-        <a href="/2020/06/23/Why-Presto-is-faster-than-Spark-SQL/" class="archive-article-date">
-  	<time datetime="2020-06-23T09:09:34.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-23</time>
+        <a href="/2020/06/26/hdfs%E7%9F%A5%E8%AF%86%E7%82%B9%E6%A2%B3%E7%90%86-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0/" class="archive-article-date">
+  	<time datetime="2020-06-26T10:34:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-26</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="https://stackoverflow.com/questions/50014017/why-presto-is-faster-than-spark-sql" target="_blank" rel="noopener">https://stackoverflow.com/questions/50014017/why-presto-is-faster-than-spark-sql</a></p>
+        <h3 id="1-HDFS数据写入流程？"><a href="#1-HDFS数据写入流程？" class="headerlink" title="1.HDFS数据写入流程？"></a>1.HDFS数据写入流程？</h3><ol>
+<li>客户端向namenode发送请求,询问是否可以上传文件</li>
+<li>namenode判断磁盘剩余量是否充足,客户端是否有权限,然后将结果返回</li>
+<li>客户端接收到namenode发来上传的指令,然后问namenode存在哪</li>
+<li>客户端拿到存储路径开始进行流水线的写入,将第一块副本按照一点的规则放在hdfs一个节点a中,a建立管道传给b(RPC调用),b传给c,管道建立完成后将结果逐级返回客户端</li>
+<li>客户端开始进行流水线复制</li>
+<li>客户端将储存结果提交给namenode,namenode储存元数据信息</li>
+<li>客户端询问namenode下一块数据的存放位置<h3 id="2-HDFS数据读取流程？"><a href="#2-HDFS数据读取流程？" class="headerlink" title="2.HDFS数据读取流程？"></a>2.HDFS数据读取流程？</h3><a id="more"></a></li>
+<li>客户端 向 NameNode 发起 RPC 请求，来确定请求文件 block 所在的位置；</li>
+<li>NameNode会视情况返回文件的部分或者全部block列表                               ，对于每个block，NameNode 都会返回含有该 block 副本的 DataNode 地址；</li>
+<li>这些返回的 DN 地址，会按照集群拓扑结构得出 DataNode 与客户端的距离，然后进行排序，排序两个规则：网络拓扑结构中距离 Client 近的排靠前；心跳机制中超时汇报的 DN 状态为 STALE，这样的排靠后；</li>
+<li>客户端 选取排序靠前的 DataNode 来读取 block，如果客户端本身就是DataNode,那么将从本地直接获取数据；</li>
+<li>调用read()方法    底层上本质是建立 Socket Stream（FSDataInputStream），重复的调用父类 DataInputStream 的 read 方法，直到这个块上的数据读取完毕；</li>
+<li>当读完列表的 block 后，若文件读取还没有结束，客户端会继续向NameNode 获取下一批的 block 列表；</li>
+<li>读取完一个 block 都会进行 checksum 验证，如果读取 DataNode 时出现错误，客户端会通知 NameNode，然后再从下一个拥有该 block 副本的DataNode 继续读。</li>
+<li>read 方法是并行的读取 block 信息，不是一块一块的读取；NameNode 只是返回客户端请求包含块的DataNode地址，并不是返回请求块的数据；</li>
+<li>最终读取来所有的 block 会合并成一个完整的最终文件。<h3 id="3-HDFS数据完整性如何保证？"><a href="#3-HDFS数据完整性如何保证？" class="headerlink" title="3.HDFS数据完整性如何保证？"></a>3.HDFS数据完整性如何保证？</h3></li>
+<li>数据在首次写入之后会生成校验和</li>
+<li>datanode会周期行的进行校验和计算,如校验和一致则正常向NameNode汇报,若不一致,则向NameNode汇报数据丢失信息,然后NameNode组织进行数据修复</li>
+<li>数据在读取时会先进行一次校验和比对,如一致则读取,不一致则去其他节点读取</li>
+</ol>
 
       
 
@@ -239,7 +259,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/06/23/Why-Presto-is-faster-than-Spark-SQL/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/06/26/hdfs%E7%9F%A5%E8%AF%86%E7%82%B9%E6%A2%B3%E7%90%86-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -253,18 +273,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2020/06/26/hdfs%E7%9F%A5%E8%AF%86%E7%82%B9%E6%A2%B3%E7%90%86-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          hdfs知识点梳理(持续更新)
-        
-      </div>
-    </a>
   
-  
-    <a href="/2020/06/23/MapReduce%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">MapReduce运行原理</div>
+    <a href="/2020/06/23/Why-Presto-is-faster-than-Spark-SQL/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Why Presto is faster than Spark SQL</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -295,8 +306,8 @@
   <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
 <script>
   var cloudTieConfig = {
-    url: "http://yoursite.com/2020/06/23/Why-Presto-is-faster-than-Spark-SQL/", 
-    sourceId: "Why-Presto-is-faster-than-Spark-SQL",
+    url: "http://yoursite.com/2020/06/26/hdfs%E7%9F%A5%E8%AF%86%E7%82%B9%E6%A2%B3%E7%90%86-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0/", 
+    sourceId: "hdfs知识点梳理-持续更新",
     productKey: "true",
     target: "cloud-tie-wrapper"
   };
