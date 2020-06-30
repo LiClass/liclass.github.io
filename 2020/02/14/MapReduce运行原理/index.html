@@ -6,21 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>hdfs知识点梳理(持续更新) | liclass的博客</title>
+  <title>MapReduce运行原理 | liclass的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="1.HDFS数据写入流程？ 客户端向namenode发送请求,询问是否可以上传文件 namenode判断磁盘剩余量是否充足,客户端是否有权限,然后将结果返回 客户端接收到namenode发来上传的指令,然后问namenode存在哪 客户端拿到存储路径开始进行流水线的写入,将第一块副本按照一点的规则放在hdfs一个节点a中,a建立管道传给b(RPC调用),b传给c,管道建立完成后将结果逐级返回客户端">
+  <meta name="description" content="map端：读文件：输出到缓冲区：分区：分区内排序：超过80%开始溢写(一个map可能溢写多次，但是最终一定会合并为一个文件)，新进数据从剩余20%开始的位置继续输入：最终会生成多个溢写文件，将文件合并：分区内部排序，执行比较器：reduce端：reducer开始拉取属于自己分区的数据：合并文件：排序：对相同的key进行操作 Map是映射，负责数据的过滤分法，将原始数据转化为键值对；Reduce是合">
 <meta property="og:type" content="article">
-<meta property="og:title" content="hdfs知识点梳理(持续更新)">
-<meta property="og:url" content="http://yoursite.com/2020/06/26/hdfs%E7%9F%A5%E8%AF%86%E7%82%B9%E6%A2%B3%E7%90%86-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0/index.html">
+<meta property="og:title" content="MapReduce运行原理">
+<meta property="og:url" content="http://yoursite.com/2020/02/14/MapReduce%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86/index.html">
 <meta property="og:site_name" content="liclass的博客">
-<meta property="og:description" content="1.HDFS数据写入流程？ 客户端向namenode发送请求,询问是否可以上传文件 namenode判断磁盘剩余量是否充足,客户端是否有权限,然后将结果返回 客户端接收到namenode发来上传的指令,然后问namenode存在哪 客户端拿到存储路径开始进行流水线的写入,将第一块副本按照一点的规则放在hdfs一个节点a中,a建立管道传给b(RPC调用),b传给c,管道建立完成后将结果逐级返回客户端">
-<meta property="article:published_time" content="2020-06-26T10:34:55.000Z">
-<meta property="article:modified_time" content="2020-06-26T13:33:02.045Z">
+<meta property="og:description" content="map端：读文件：输出到缓冲区：分区：分区内排序：超过80%开始溢写(一个map可能溢写多次，但是最终一定会合并为一个文件)，新进数据从剩余20%开始的位置继续输入：最终会生成多个溢写文件，将文件合并：分区内部排序，执行比较器：reduce端：reducer开始拉取属于自己分区的数据：合并文件：排序：对相同的key进行操作 Map是映射，负责数据的过滤分法，将原始数据转化为键值对；Reduce是合">
+<meta property="article:published_time" content="2020-02-14T07:32:43.000Z">
+<meta property="article:modified_time" content="2020-06-30T11:58:39.251Z">
 <meta property="article:author" content="liclass">
-<meta property="article:tag" content="分布式">
 <meta property="article:tag" content="大数据">
-<meta property="article:tag" content="笔记">
-<meta property="article:tag" content="hdfs">
+<meta property="article:tag" content="架构">
+<meta property="article:tag" content="MapReduce">
 <meta name="twitter:card" content="summary">
   
     <link rel="alternative" href="/atom.xml" title="liclass的博客" type="application/atom+xml">
@@ -157,47 +156,181 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-hdfs知识点梳理-持续更新" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-MapReduce运行原理" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      hdfs知识点梳理(持续更新)
+      MapReduce运行原理
     </h1>
   
 
         
-        <a href="/2020/06/26/hdfs%E7%9F%A5%E8%AF%86%E7%82%B9%E6%A2%B3%E7%90%86-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0/" class="archive-article-date">
-  	<time datetime="2020-06-26T10:34:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-26</time>
+        <a href="/2020/02/14/MapReduce%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86/" class="archive-article-date">
+  	<time datetime="2020-02-14T07:32:43.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-14</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="1-HDFS数据写入流程？"><a href="#1-HDFS数据写入流程？" class="headerlink" title="1.HDFS数据写入流程？"></a>1.HDFS数据写入流程？</h3><ol>
-<li>客户端向namenode发送请求,询问是否可以上传文件</li>
-<li>namenode判断磁盘剩余量是否充足,客户端是否有权限,然后将结果返回</li>
-<li>客户端接收到namenode发来上传的指令,然后问namenode存在哪</li>
-<li>客户端拿到存储路径开始进行流水线的写入,将第一块副本按照一点的规则放在hdfs一个节点a中,a建立管道传给b(RPC调用),b传给c,管道建立完成后将结果逐级返回客户端</li>
-<li>客户端开始进行流水线复制</li>
-<li>客户端将储存结果提交给namenode,namenode储存元数据信息</li>
-<li>客户端询问namenode下一块数据的存放位置<h3 id="2-HDFS数据读取流程？"><a href="#2-HDFS数据读取流程？" class="headerlink" title="2.HDFS数据读取流程？"></a>2.HDFS数据读取流程？</h3><a id="more"></a></li>
-<li>客户端 向 NameNode 发起 RPC 请求，来确定请求文件 block 所在的位置；</li>
-<li>NameNode会视情况返回文件的部分或者全部block列表                               ，对于每个block，NameNode 都会返回含有该 block 副本的 DataNode 地址；</li>
-<li>这些返回的 DN 地址，会按照集群拓扑结构得出 DataNode 与客户端的距离，然后进行排序，排序两个规则：网络拓扑结构中距离 Client 近的排靠前；心跳机制中超时汇报的 DN 状态为 STALE，这样的排靠后；</li>
-<li>客户端 选取排序靠前的 DataNode 来读取 block，如果客户端本身就是DataNode,那么将从本地直接获取数据；</li>
-<li>调用read()方法    底层上本质是建立 Socket Stream（FSDataInputStream），重复的调用父类 DataInputStream 的 read 方法，直到这个块上的数据读取完毕；</li>
-<li>当读完列表的 block 后，若文件读取还没有结束，客户端会继续向NameNode 获取下一批的 block 列表；</li>
-<li>读取完一个 block 都会进行 checksum 验证，如果读取 DataNode 时出现错误，客户端会通知 NameNode，然后再从下一个拥有该 block 副本的DataNode 继续读。</li>
-<li>read 方法是并行的读取 block 信息，不是一块一块的读取；NameNode 只是返回客户端请求包含块的DataNode地址，并不是返回请求块的数据；</li>
-<li>最终读取来所有的 block 会合并成一个完整的最终文件。<h3 id="3-HDFS数据完整性如何保证？"><a href="#3-HDFS数据完整性如何保证？" class="headerlink" title="3.HDFS数据完整性如何保证？"></a>3.HDFS数据完整性如何保证？</h3></li>
-<li>数据在首次写入之后会生成校验和</li>
-<li>datanode会周期行的进行校验和计算,如校验和一致则正常向NameNode汇报,若不一致,则向NameNode汇报数据丢失信息,然后NameNode组织进行数据修复</li>
-<li>数据在读取时会先进行一次校验和比对,如一致则读取,不一致则去其他节点读取</li>
-</ol>
+        <p>map端：<br>读文件：输出到缓冲区：分区：分区内排序：超过80%开始溢写(一个map可能溢写多次，但是最终一定会合并为一个文件)，新进数据从剩余20%开始的位置继续输入：最终会生成多个溢写文件，将文件合并：分区内部排序，执行比较器：<br>reduce端：<br>reducer开始拉取属于自己分区的数据：合并文件：排序：对相同的key进行操作</p>
+<p>Map是映射，负责数据的过滤分法，将原始数据转化为键值对；<br>Reduce是合并，将具有相同key值的value进行处理后再输出新的键值对作为最终结果</p>
+<h2 id="MapReduce-运行原理"><a href="#MapReduce-运行原理" class="headerlink" title="MapReduce 运行原理"></a>MapReduce 运行原理</h2><h3 id="Map-Side"><a href="#Map-Side" class="headerlink" title="Map Side"></a>Map Side</h3><h4 id="1-从磁盘读取数据并分片"><a href="#1-从磁盘读取数据并分片" class="headerlink" title="1.从磁盘读取数据并分片"></a>1.从磁盘读取数据并分片</h4><p>默认一个block对应一个分片，对应一个map task</p>
+<h4 id="2-map-task处理"><a href="#2-map-task处理" class="headerlink" title="2.map task处理"></a>2.map task处理</h4><p>map业务处理</p>
+<h4 id="3-输出数据到缓冲区"><a href="#3-输出数据到缓冲区" class="headerlink" title="3.输出数据到缓冲区"></a>3.输出数据到缓冲区</h4> <a id="more"></a>
+<p>map 输出的数据并不是直接写入磁盘的，而是会预先存储在一个预定义的buffer中</p>
+<h4 id="4-分区、排序分组"><a href="#4-分区、排序分组" class="headerlink" title="4.分区、排序分组"></a>4.分区、排序分组</h4><p>对map的输出结果进行分区，分区主要功能是用来指定 map 的输出结果交给哪个 reduce 任务处理，默认是通过 map 输出结果的 key 值取hashcode 对代码中配置的 redue task数量取模运算，值一样的分到一个区，也就是一个 reduce 任务对应一个分区的数据，这样做的好处就是可以避免有的 reduce 任务分配到大量的数据<br>按照key进行排序，sort by key 排序，如果此时设置了 Combiner，将排序后的结果进行 Combine 操作</p>
+<h4 id="5-规约（combainer）"><a href="#5-规约（combainer）" class="headerlink" title="5.规约（combainer）"></a>5.规约（combainer）</h4><p>相当于本地端的reduce</p>
+<h4 id="6-合并写入磁盘"><a href="#6-合并写入磁盘" class="headerlink" title="6.合并写入磁盘"></a>6.合并写入磁盘</h4><p>将最终的数据进行merge，在合并文件的过程中会不断的进行排序跟 Combine 操作，也可以进行压缩<br>等待shuffle</p>
+<h3 id="Reduce-Side"><a href="#Reduce-Side" class="headerlink" title="Reduce Side"></a>Reduce Side</h3><h4 id="1-从map端拉取数据"><a href="#1-从map端拉取数据" class="headerlink" title="1.从map端拉取数据"></a>1.从map端拉取数据</h4><p> JobTracker 中保存了整个集群中的宏观信息，只要 reduce 任务向 JobTracker 获取对应的 map 输出位置就可以了，<br> 如果 reduce 接收到的数据较小，则会存在内存缓冲区中，直到数据量达到该缓存区的一定比例时对数据进行合并后溢写到磁盘上</p>
+<h4 id="2-对数据进行合并（1-2两个步骤为shuffle过程）"><a href="#2-对数据进行合并（1-2两个步骤为shuffle过程）" class="headerlink" title="2.对数据进行合并（1,2两个步骤为shuffle过程）"></a>2.对数据进行合并（1,2两个步骤为shuffle过程）</h4><p>合并前如果压缩了，要解压缩<br>随着溢写的文件越来越多，后台的线程会将他们合并成一个更大的有序的文件，可以为后面合并节省时间</p>
+<h4 id="3-对数据进行排序"><a href="#3-对数据进行排序" class="headerlink" title="3.对数据进行排序"></a>3.对数据进行排序</h4><p>合并时按照key排序</p>
+<h4 id="4-进行reduce操作"><a href="#4-进行reduce操作" class="headerlink" title="4.进行reduce操作"></a>4.进行reduce操作</h4><p>最后一个合并的结果是不需要写到磁盘上，而是可以直接输入到 reduce 函数中计算，每个 reduce 对应一个输出结果文件。</p>
+<h4 id="5-输出到磁盘"><a href="#5-输出到磁盘" class="headerlink" title="5.输出到磁盘"></a>5.输出到磁盘</h4><h3 id="最简单的调优方式"><a href="#最简单的调优方式" class="headerlink" title="最简单的调优方式"></a>最简单的调优方式</h3><h4 id="设置Combiner"><a href="#设置Combiner" class="headerlink" title="设置Combiner"></a>设置Combiner</h4><p>对map结果进行了一次reduce操作，减少了map的输出结果和reduce的远程拷贝数据量，使得Map task和 Reduce task的执行时间缩短</p>
+<h4 id="选择合理的Writable类型"><a href="#选择合理的Writable类型" class="headerlink" title="选择合理的Writable类型"></a>选择合理的Writable类型</h4><p>比如，要处理整型类型数据时，输出类型IntWritable就比Text高效（需要转换）<br>如果输出整数的大部分可以用一个或者两个字节保存，可直接采用VIntWritable，VLongWritable，采用变长整型的编码方式，减少数据输出量。</p>
+<h3 id="作业级别调优"><a href="#作业级别调优" class="headerlink" title="作业级别调优"></a>作业级别调优</h3><p>增加输入文件副本数，减少数据网络传输时间。（酌情设置）</p>
+<h3 id="Map-side-tuning"><a href="#Map-side-tuning" class="headerlink" title="Map side tuning"></a>Map side tuning</h3><h4 id="InputFormat"><a href="#InputFormat" class="headerlink" title="InputFormat"></a>InputFormat</h4><p>map的第一步，从磁盘读取数据并切片。当读取海量的小文件时，会启动大量的map task，效率非常慢，可以通过CombineInputFormat 自定义分片策略对小文件进行合并，从而减少map task的数量，减少map 时间，此外：</p>
+<p>mapred.min.split.size：Input Split的最小值 默认值1</p>
+<p>mapred.max.split.size：Input Split的最大值</p>
+<p>dfs.block.size：HDFS 中一个block大小，默认值128MB。</p>
+<p>当mapred.min.split.size小于dfs.block.size的时候，一个block会被分为多个分片，也就是对应多个map task。</p>
+<p>当mapred.min.split.size大于dfs.block.size的时候，一个分片可能对应多个block，也就是一个map task读取多个block数据。<br>集群的网络、IO等性能很好的时候，建议调高dfs.block.size。<br>根据数据源的特性，主要调整mapred.min.split.size来控制map task的数量</p>
+<h4 id="Buffer（map-输出结果）"><a href="#Buffer（map-输出结果）" class="headerlink" title="Buffer（map 输出结果）"></a>Buffer（map 输出结果）</h4><p>设置Buffer话可以减少map任务的IO开销，从而提高性能。</p>
+<p>首先将map结果输出到buffer，当缓存的使用量超过80%的时候，开始溢出到磁盘（splll)，buffer默认100M，可以通过io.sort.mb设置。</p>
+<p>但是如果将io.sort.mb调的非常大的时候，对机器的配置要求就非常高，因为占用内存过大，所以需要根据情况进行配置。</p>
+<p>map并不是等buffer写满才spill，通过io.sort.spill.percent可以调整。这个会影响spill的频繁程度，进而影响map task</p>
+<p>Merge(spill合并，防止出现大量小文件)</p>
+<p>该阶段是map产生spill之后，对spill进行处理的过程，通过对其进行配置也可以达到优化IO开销的目的。</p>
+<p>merge过程是并行处理spill的,每次并行多少个spill是由参数io.sort.factor指定的,默认为10个</p>
+<p>如果产生的spill非常多，merge的时候每次只能处理10个spill，那么还是会造成频繁的IO处理</p>
+<p>适当的调大每次并行处理的spill数有利于减少merge数因此可以影响map的性能</p>
+<p>但是如果调整的数值过大，并行处理spill的进程过多会对机器造成很大压力</p>
+<h4 id="Combine（根据自定义函数合并结果）"><a href="#Combine（根据自定义函数合并结果）" class="headerlink" title="Combine（根据自定义函数合并结果）"></a>Combine（根据自定义函数合并结果）</h4><p>我们知道如果map side设置了Combiner，那么会根据设定的函数对map输出的数据进行一次类reduce的预处理</p>
+<p>但是和分组、排序分组不一样的是，combine发生的阶段可能是在merge之前，也可能是在merge之后</p>
+<p>这个时机可以由一个参数控制：min.num.spill.for.combine，默认值为3 当job中设定了combiner，并且spill数最少有3个的时候，那么combiner函数就会在merge产生结果文件之前运行</p>
+<p>例如，产生的spill非常多，虽然我们可以通过merge阶段的io.sort.factor进行优化配置，但是在此之前我们还可以通过先执行combine对结果进行处理之后再对数据进行merge 这样一来，到merge阶段的数据量将会进一步减少，IO开销也会被降到最低</p>
+<h4 id="输出中间数据到磁盘"><a href="#输出中间数据到磁盘" class="headerlink" title="输出中间数据到磁盘"></a>输出中间数据到磁盘</h4><p>其实无论是spill的时候，还是最后merge产生的结果文件，都是可以压缩的,控制输出是否使用压缩的参数是mapred.compress.map.output，值为true或者false.启用压缩之后，会牺牲CPU的一些计算资源，但是可以节省IO开销，非常适合IO密集型的作业（如果是CPU密集型的作业不建议设置）<br>设置压缩的时候，我们可以选择不同的压缩算法 Hadoop默认提供了GzipCodec，LzoCodec，BZip2Codec，LzmaCodec等压缩格式<br>通常来说，想要达到比较平衡的cpu和磁盘压缩比，LzoCodec比较合适，但也要取决于job的具体情况<br>如果想要自行选择中间结果的压缩算法，可以设置配置参数：<br>mapred.map.output.compression.codec=org.apache.hadoop.io.compress.DefaultCodec<br>//或者其他用户自行选择的压缩方式</p>
+<h4 id="map-side-tuning-总结"><a href="#map-side-tuning-总结" class="headerlink" title="map side tuning 总结"></a>map side tuning 总结</h4><p>==map端的性能瓶颈都是频繁的IO操作造成的==，所有的优化也都是针对IO进行的，而优化的瓶颈又很大程度上被机器的配置等外部因素所限制</p>
+<p>选项</p>
+<p>类型</p>
+<p>默认值</p>
+<p>描述</p>
+<p>mapred.min.split.size</p>
+<p>int</p>
+<p>1</p>
+<p>Input Split的最小值</p>
+<p>mapred.max.split.size</p>
+<p>int</p>
+<p>.</p>
+<p>Input Split的最大值</p>
+<p>io.sort.mb</p>
+<p>int</p>
+<p>100</p>
+<p>map缓冲区大小</p>
+<p>io.sort.spill.percent</p>
+<p>float</p>
+<p>0.8</p>
+<p>缓冲区阈值</p>
+<p>io.sort.factor</p>
+<p>int</p>
+<p>10</p>
+<p>并行处理spill的个数</p>
+<p>min.num.spill.for.combine</p>
+<p>int</p>
+<p>3</p>
+<p>最少有多少个spill的时候combine在merge之前进行</p>
+<p>mapred.compress.map.output</p>
+<p>boolean</p>
+<p>false</p>
+<p>map中间数据是否采用压缩</p>
+<p>mapred.map.output.compression.codec</p>
+<p>String</p>
+<p>.</p>
+<p>压缩算法</p>
+<h3 id="Reduce-side-tuning"><a href="#Reduce-side-tuning" class="headerlink" title="Reduce side tuning"></a>Reduce side tuning</h3><h4 id="Shuffle"><a href="#Shuffle" class="headerlink" title="Shuffle"></a>Shuffle</h4><ul>
+<li>1.Copy<br>每一个job都会将map输出结果根据reduce（n）分成n个partition。所以，为了节省时间，==在第一个map结束后，所有reduce就开始尝试从完成的map中下载该reduce对应的partition==</li>
+</ul>
+<p>在这个shuffle过程中，由于map的数量通常是很多个的，而每个map中又都有可能包含每个reduce所需要的数据</p>
+<p>所以对于每个reduce来说，去各个map中拿数据也是并行的，可以通过mapred.reduce.parallel.copies这个参数来调整，默认为5</p>
+<p>当map数量很多的时候，就可以适当调大这个值，减少shuffle过程使用的时间 还有一种情况是：reduce从map中拿数据的时候，有可能因为中间结果丢失、网络等其他原因导致map任务失败</p>
+<p>而reduce不会因为map失败就永无止境的等待下去，它会尝试去别的地方获得自己的数据（这段时间失败的map可能会被重跑） 所以设置reduce获取数据的超时时间可以避免一些因为网络不好导致无法获得数据的情况</p>
+<p>mapred.reduce.copy.backoff，默认300s,一般情况下不用调整这个值，因为生产环境的网络都是很流畅的</p>
+<ul>
+<li>2.Merge<br>由于reduce是并行将map结果下载到本地，所以也是需要进行merge的，所以io.sort.factor的配置选项同样会影响reduce进行merge时的行为</li>
+</ul>
+<p>和map一样，reduce下载过来的数据也是存入一个buffer中而不是马上写入磁盘的，所以我们同样可以控制这个值来减少IO开销 控制该值的参数为： mapred.job.shuffle.input.buffer.percent，默认0.7，这是一个百分比，意思是reduce的可用内存中拿出70%作为buffer存放数据</p>
+<p>reduce的可用内存通过mapred.child.Java.opts来设置，比如置为-Xmx1024m，该参数是同时设定map和reduce task的可用内存，一般为map buffer大小的两倍左右</p>
+<p>设置了reduce端的buffer大小，我们同样可以通过一个参数来控制buffer中的数据达到一个阈值的时候开始往磁盘写数据：mapred.job.shuffle.merge.percent，默认为0.66</p>
+<ul>
+<li><p>Sort<br>sort的过程一般非常短，因为是边copy边merge边sort的，后面就直接进入真正的reduce计算阶段了</p>
+</li>
+<li><p>Reduce<br>之前我们说过reduc端的buffer，默认情况下，数据达到一个阈值的时候，buffer中的数据就会写入磁盘，然后reduce会从磁盘中获得所有的数据</p>
+</li>
+</ul>
+<p>也就是说，buffer和reduce是没有直接关联的，中间多个一个写磁盘-&gt;读磁盘的过程，既然有这个弊端，那么就可以通过参数来配置使得buffer中的一部分数据可以直接输送到reduce，从而减少IO开销：==mapred.job.reduce.input.buffer.percent==，默认为0.0</p>
+<p>当值大于0的时候，会保留指定比例的内存读buffer中的数据直接拿给reduce使用 这样一来，设置buffer需要内存，读取数据需要内存，reduce计算也要内存，所以要根据作业的运行情况进行调整</p>
+<h4 id="Reduce-side-tuning总结"><a href="#Reduce-side-tuning总结" class="headerlink" title="Reduce side tuning总结"></a>Reduce side tuning总结</h4><p>和map阶段差不多，reduce节点的调优也是主要集中在加大内存使用量，减少IO，增大并行数</p>
+<h3 id="reduce调优主要参数："><a href="#reduce调优主要参数：" class="headerlink" title="reduce调优主要参数："></a>reduce调优主要参数：</h3><p>选项</p>
+<p>类型</p>
+<p>默认值</p>
+<p>描述</p>
+<p>mapred.reduce.parallel.copies</p>
+<p>int</p>
+<p>5</p>
+<p>每个reduce去map中拿数据的并行数</p>
+<p>mapred.reduce.copy.backoff</p>
+<p>int</p>
+<p>300</p>
+<p>获取map数据最大超时时间</p>
+<p>mapred.job.shuffle.input.buffer.percent</p>
+<p>float</p>
+<p>0.7</p>
+<p>buffer大小占reduce可用内存的比例</p>
+<p>mapred.child.java.opts</p>
+<p>String</p>
+<p>.</p>
+<p>-Xmx1024m设置reduce可用内存为1g</p>
+<p>mapred.job.shuffle.merge.percent</p>
+<p>float</p>
+<p>0.66</p>
+<p>buffer中的数据达到多少比例开始写入磁盘</p>
+<p>mapred.job.reduce.input.buffer.percent</p>
+<p>float</p>
+<p>0.0</p>
+<p>指定多少比例的内存用来存放buffer中的数据</p>
+<p>MapReduce tuning总结<br>Map Task和Reduce Task调优的一个原则就是</p>
+<p>减少数据的传输量<br>尽量使用内存<br>减少磁盘IO的次数<br>增大任务并行数<br>除此之外还有根据自己集群及网络的实际情况来调优</p>
+<p>Map task和Reduce task的启动数<br>1.mapper数量<br>每个作业启动的mapper由输入的分片数决定，每个节点启动的mapper数应该是在10-100之间，且最好每个map的执行时间至少一分钟 如果输入的文件巨大，会产生无数个mapper的情况，应该使用mapred.tasktracker.map.tasks.maximum参数确定每个tasktracker能够启动的最大mapper数，默认只有2 以免同时启动过多的mapper</p>
+<p>2.reducer数量<br>reducer的启动数量官方建议是0.95或者1.75节点数每个节点的container数 使用0.95的时候reduce只需要一轮就可以完成 使用1.75的时候完成较快的reducer会进行第二轮计算，并进行负载均衡</p>
+<p>增加reducer的数量会增加集群的负担，但是会得到较好的负载均衡结果和减低失败成本</p>
+<p>一些详细的参数：</p>
+<p>选项</p>
+<p>类型</p>
+<p>默认值</p>
+<p>描述</p>
+<p>mapred.reduce.tasks</p>
+<p>int</p>
+<p>1</p>
+<p>reduce task数量</p>
+<p>mapred.tasktracker.map.tasks.maximum</p>
+<p>int</p>
+<p>2</p>
+<p>每个节点上能够启动map task的最大数量</p>
+<p>mapred.tasktracker.reduce.tasks.maximum</p>
+<p>int</p>
+<p>2</p>
+<p>每个节点上能够启动reduce task的最大数量</p>
+<p>mapred.reduce.slowstart.completed.maps</p>
+<p>float</p>
+<p>0.05</p>
+<p>map阶段完成5%的时候开始进行reduce计算</p>
+<p>map和reduce task是同时启动的，很长一段时间是并存的,共存的时间取决于mapred.reduce.slowstart.completed.maps的设置,如果设置为0.6.那么reduce将在map完成60%后进入运行态</p>
+<p>如果设置的map和reduce参数都很大，势必造成map和reduce争抢资源，造成有些进程饥饿，超时出错，最大的可能就是socket.timeout的出错</p>
+<p>reduce是在33%的时候完成shuffle过程，所以==确保reduce进行到33%的时候map任务全部完成==，可以通过观察任务界面的完成度进行调整。当reduce到达33%的时候，map恰好达到100%设置最佳的比例，可以让map先完成，但是不要让reduce等待计算资源</p>
+<p> <a href="https://www.cnblogs.com/whcwkw1314/p/8970985.html" target="_blank" rel="noopener">https://www.cnblogs.com/whcwkw1314/p/8970985.html</a></p>
 
       
 
@@ -211,19 +344,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">笔记</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">hdfs</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">MapReduce</a>
         		</li>
       		
 		</ul>
@@ -285,7 +414,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/06/26/hdfs%E7%9F%A5%E8%AF%86%E7%82%B9%E6%A2%B3%E7%90%86-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2020/02/14/MapReduce%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -299,9 +428,18 @@
   
 <nav id="article-nav">
   
+    <a href="/2020/02/19/map-%E5%92%8C-reduce-%E7%9A%84%E4%B8%AA%E6%95%B0%E8%B0%83%E6%95%B4%E6%96%B9%E6%A1%88/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          map 和 reduce 的个数调整方案
+        
+      </div>
+    </a>
   
-    <a href="/2020/06/23/MapReduce%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">MapReduce运行原理</div>
+  
+    <a href="/2019/10/29/kafka%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">kafka读书笔记</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -332,8 +470,8 @@
   <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
 <script>
   var cloudTieConfig = {
-    url: "http://yoursite.com/2020/06/26/hdfs%E7%9F%A5%E8%AF%86%E7%82%B9%E6%A2%B3%E7%90%86-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0/", 
-    sourceId: "hdfs知识点梳理-持续更新",
+    url: "http://yoursite.com/2020/02/14/MapReduce%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86/", 
+    sourceId: "MapReduce运行原理",
     productKey: "true",
     target: "cloud-tie-wrapper"
   };

@@ -154,189 +154,6 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-hdfs知识点梳理-持续更新" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/06/26/hdfs%E7%9F%A5%E8%AF%86%E7%82%B9%E6%A2%B3%E7%90%86-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0/">hdfs知识点梳理(持续更新)</a>
-    </h1>
-  
-
-        
-        <a href="/2020/06/26/hdfs%E7%9F%A5%E8%AF%86%E7%82%B9%E6%A2%B3%E7%90%86-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0/" class="archive-article-date">
-  	<time datetime="2020-06-26T10:34:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="1-HDFS数据写入流程？"><a href="#1-HDFS数据写入流程？" class="headerlink" title="1.HDFS数据写入流程？"></a>1.HDFS数据写入流程？</h3><ol>
-<li>客户端向namenode发送请求,询问是否可以上传文件</li>
-<li>namenode判断磁盘剩余量是否充足,客户端是否有权限,然后将结果返回</li>
-<li>客户端接收到namenode发来上传的指令,然后问namenode存在哪</li>
-<li>客户端拿到存储路径开始进行流水线的写入,将第一块副本按照一点的规则放在hdfs一个节点a中,a建立管道传给b(RPC调用),b传给c,管道建立完成后将结果逐级返回客户端</li>
-<li>客户端开始进行流水线复制</li>
-<li>客户端将储存结果提交给namenode,namenode储存元数据信息</li>
-<li>客户端询问namenode下一块数据的存放位置<h3 id="2-HDFS数据读取流程？"><a href="#2-HDFS数据读取流程？" class="headerlink" title="2.HDFS数据读取流程？"></a>2.HDFS数据读取流程？</h3>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">笔记</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">hdfs</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-     
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/06/26/hdfs%E7%9F%A5%E8%AF%86%E7%82%B9%E6%A2%B3%E7%90%86-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-MapReduce运行原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/06/23/MapReduce%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86/">MapReduce运行原理</a>
-    </h1>
-  
-
-        
-        <a href="/2020/06/23/MapReduce%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86/" class="archive-article-date">
-  	<time datetime="2020-06-23T07:32:43.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>map端：<br>读文件：输出到缓冲区：分区：分区内排序：超过80%开始溢写(一个map可能溢写多次，但是最终一定会合并为一个文件)，新进数据从剩余20%开始的位置继续输入：最终会生成多个溢写文件，将文件合并：分区内部排序，执行比较器：<br>reduce端：<br>reducer开始拉取属于自己分区的数据：合并文件：排序：对相同的key进行操作</p>
-<p>Map是映射，负责数据的过滤分法，将原始数据转化为键值对；<br>Reduce是合并，将具有相同key值的value进行处理后再输出新的键值对作为最终结果</p>
-<h2 id="MapReduce-运行原理"><a href="#MapReduce-运行原理" class="headerlink" title="MapReduce 运行原理"></a>MapReduce 运行原理</h2><h3 id="Map-Side"><a href="#Map-Side" class="headerlink" title="Map Side"></a>Map Side</h3><h4 id="1-从磁盘读取数据并分片"><a href="#1-从磁盘读取数据并分片" class="headerlink" title="1.从磁盘读取数据并分片"></a>1.从磁盘读取数据并分片</h4><p>默认一个block对应一个分片，对应一个map task</p>
-<h4 id="2-map-task处理"><a href="#2-map-task处理" class="headerlink" title="2.map task处理"></a>2.map task处理</h4><p>map业务处理</p>
-<h4 id="3-输出数据到缓冲区"><a href="#3-输出数据到缓冲区" class="headerlink" title="3.输出数据到缓冲区"></a>3.输出数据到缓冲区</h4>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">MapReduce</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-     
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/06/23/MapReduce%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-发挥自己的价值，爱自己爱的人，坚强的应对生命的考题，哪怕是送命题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -398,257 +215,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2020/06/20/%E5%8F%91%E6%8C%A5%E8%87%AA%E5%B7%B1%E7%9A%84%E4%BB%B7%E5%80%BC%EF%BC%8C%E7%88%B1%E8%87%AA%E5%B7%B1%E7%88%B1%E7%9A%84%E4%BA%BA%EF%BC%8C%E5%9D%9A%E5%BC%BA%E7%9A%84%E5%BA%94%E5%AF%B9%E7%94%9F%E5%91%BD%E7%9A%84%E8%80%83%E9%A2%98%EF%BC%8C%E5%93%AA%E6%80%95%E6%98%AF%E9%80%81%E5%91%BD%E9%A2%98/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-《Time-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System》" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/06/18/%E3%80%8ATime-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System%E3%80%8B/">《Time, Clocks, and the Ordering of Events in a Distributed System》</a>
-    </h1>
-  
-
-        
-        <a href="/2020/06/18/%E3%80%8ATime-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System%E3%80%8B/" class="archive-article-date">
-  	<time datetime="2020-06-18T12:52:27.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-18</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="https://zhuanlan.zhihu.com/p/87649080" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/87649080</a><br><a href="https://www.cnblogs.com/fxjwind/archive/2013/04/13/3017892.html" target="_blank" rel="noopener">https://www.cnblogs.com/fxjwind/archive/2013/04/13/3017892.html</a><br><a href="https://zhuanlan.zhihu.com/p/34057588" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/34057588</a><br><a href="https://blog.ivanyang.me/distributedsystem/2016/03/06/whatwetalkaboutwhenwetalkaboutds" target="_blank" rel="noopener">https://blog.ivanyang.me/distributedsystem/2016/03/06/whatwetalkaboutwhenwetalkaboutds</a></p>
-<p>鉴于分布式计算节点独立的特点，时序一直是分布式系统绕不过的话题，本文是对分布式时间-始终问题方面被引用最多的论文之一进行翻译<br><br>原文链接：<a href="https://lamport.azurewebsites.net/pubs/time-clocks.pdf" target="_blank" rel="noopener">Time, Clocks, and the Ordering of Events in a Distributed System</a><br></p>
-<p>Abstract<br>本文讨论了在分布式系统中，一个事件发生在另一个事件之前的概念，并用它描述了事件的偏序关系。 给出了一种可以用于同步逻辑时钟系统的分布式算法，逻辑时钟系统可以用于确定事件的全序关系。 全序关系用以解决分布式中遇到的事件同步问题。 该方法被用于解决同步物理时钟，并且限定同步时钟的误差。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">翻译</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-     
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/06/18/%E3%80%8ATime-Clocks-and-the-Ordering-of-Events-in-a-Distributed-System%E3%80%8B/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-为什么-读时模式-如此好用？" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/06/15/%E4%B8%BA%E4%BB%80%E4%B9%88-%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F-%E5%A6%82%E6%AD%A4%E5%A5%BD%E7%94%A8%EF%BC%9F/">为什么[读时模式]如此好用？</a>
-    </h1>
-  
-
-        
-        <a href="/2020/06/15/%E4%B8%BA%E4%BB%80%E4%B9%88-%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F-%E5%A6%82%E6%AD%A4%E5%A5%BD%E7%94%A8%EF%BC%9F/" class="archive-article-date">
-  	<time datetime="2020-06-15T12:51:52.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>原文链接 <a href="https://www.ibmbigdatahub.com/blog/why-schema-read-so-useful" target="_blank" rel="noopener">Why is Schema on Read So Useful?</a></p>
-<p>尽管我尽了最大的努力来引导，但在与客户的交流中还是会不断出现的一个问题：“我的系统拥有多大的数据量级我才需要使用大数据解决方案？” 如我先前所写，通常情况下，通过数据量来评估是否选择大数据技术是不合理的。尽管在某些情况下（例如，如果你像我们的某些客户一样明确知道要管理6PB以上的数据）是可以根据数据大小选择大数据解决方案，但是对于大多数的大数据项目都是在数据规模变大之前就需要灵活性。这些系统的灵活性体现在很多方面，但我想在这里重点介绍其中一个：“读时模式”。<br>在数据到达存储系统之前，数据的数据结构是确定的，并且我们在写入数据时将该结构应用于数据存储。我们大多数人都非常熟悉【写时模式】，我们使用传统的（仍然很重要）关系型数据库来存储具有特定结构的数据，通常我们认为它是解决问题的唯一方法。因此，为了大家改变这种想法，让我们来看一下这种方法的利弊。写时模式有一些不小的优点，包括：</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">翻译</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-     
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/06/15/%E4%B8%BA%E4%BB%80%E4%B9%88-%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F-%E5%A6%82%E6%AD%A4%E5%A5%BD%E7%94%A8%EF%BC%9F/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-读时模式的合理性分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/06/15/%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%90%88%E7%90%86%E6%80%A7%E5%88%86%E6%9E%90/">读时模式的合理性分析</a>
-    </h1>
-  
-
-        
-        <a href="/2020/06/15/%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%90%88%E7%90%86%E6%80%A7%E5%88%86%E6%9E%90/" class="archive-article-date">
-  	<time datetime="2020-06-15T05:14:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>与读时模式对应的概念是写时模式，英文名称是schema on read 和 schema on write，通常(并非绝对)传统关系型数据库对应schema on write，大数据技术对应schema on read，存在即合理，为何大数据技术会摒弃流行多年的schema on write，那么本文来研究下schema on read的合理性。</p>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">hadoop</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-     
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/06/15/%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%90%88%E7%90%86%E6%80%A7%E5%88%86%E6%9E%90/">展开全文 >></a>
         </p>
       
 
@@ -847,6 +413,94 @@
 
 
   
+    <article id="post-MapReduce运行原理" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/02/14/MapReduce%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86/">MapReduce运行原理</a>
+    </h1>
+  
+
+        
+        <a href="/2020/02/14/MapReduce%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86/" class="archive-article-date">
+  	<time datetime="2020-02-14T07:32:43.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-02-14</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>map端：<br>读文件：输出到缓冲区：分区：分区内排序：超过80%开始溢写(一个map可能溢写多次，但是最终一定会合并为一个文件)，新进数据从剩余20%开始的位置继续输入：最终会生成多个溢写文件，将文件合并：分区内部排序，执行比较器：<br>reduce端：<br>reducer开始拉取属于自己分区的数据：合并文件：排序：对相同的key进行操作</p>
+<p>Map是映射，负责数据的过滤分法，将原始数据转化为键值对；<br>Reduce是合并，将具有相同key值的value进行处理后再输出新的键值对作为最终结果</p>
+<h2 id="MapReduce-运行原理"><a href="#MapReduce-运行原理" class="headerlink" title="MapReduce 运行原理"></a>MapReduce 运行原理</h2><h3 id="Map-Side"><a href="#Map-Side" class="headerlink" title="Map Side"></a>Map Side</h3><h4 id="1-从磁盘读取数据并分片"><a href="#1-从磁盘读取数据并分片" class="headerlink" title="1.从磁盘读取数据并分片"></a>1.从磁盘读取数据并分片</h4><p>默认一个block对应一个分片，对应一个map task</p>
+<h4 id="2-map-task处理"><a href="#2-map-task处理" class="headerlink" title="2.map task处理"></a>2.map task处理</h4><p>map业务处理</p>
+<h4 id="3-输出数据到缓冲区"><a href="#3-输出数据到缓冲区" class="headerlink" title="3.输出数据到缓冲区"></a>3.输出数据到缓冲区</h4>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">MapReduce</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+     
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/02/14/MapReduce%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-kafka读书笔记" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -936,6 +590,101 @@
 
 
   
+    <article id="post-hdfs知识点梳理-持续更新" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/25/hdfs%E7%9F%A5%E8%AF%86%E7%82%B9%E6%A2%B3%E7%90%86-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0/">hdfs知识点梳理(持续更新)</a>
+    </h1>
+  
+
+        
+        <a href="/2019/08/25/hdfs%E7%9F%A5%E8%AF%86%E7%82%B9%E6%A2%B3%E7%90%86-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0/" class="archive-article-date">
+  	<time datetime="2019-08-25T10:34:55.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-HDFS数据写入流程？"><a href="#1-HDFS数据写入流程？" class="headerlink" title="1.HDFS数据写入流程？"></a>1.HDFS数据写入流程？</h3><ol>
+<li>客户端向namenode发送请求,询问是否可以上传文件</li>
+<li>namenode判断磁盘剩余量是否充足,客户端是否有权限,然后将结果返回</li>
+<li>客户端接收到namenode发来上传的指令,然后问namenode存在哪</li>
+<li>客户端拿到存储路径开始进行流水线的写入,将第一块副本按照一点的规则放在hdfs一个节点a中,a建立管道传给b(RPC调用),b传给c,管道建立完成后将结果逐级返回客户端</li>
+<li>客户端开始进行流水线复制</li>
+<li>客户端将储存结果提交给namenode,namenode储存元数据信息</li>
+<li>客户端询问namenode下一块数据的存放位置<h3 id="2-HDFS数据读取流程？"><a href="#2-HDFS数据读取流程？" class="headerlink" title="2.HDFS数据读取流程？"></a>2.HDFS数据读取流程？</h3>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">笔记</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">hdfs</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+     
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/25/hdfs%E7%9F%A5%E8%AF%86%E7%82%B9%E6%A2%B3%E7%90%86-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-hadoop权威指南读书笔记" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -993,6 +742,263 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/05/25/hadoop%E6%9D%83%E5%A8%81%E6%8C%87%E5%8D%97%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-为什么-读时模式-如此好用？" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/12/%E4%B8%BA%E4%BB%80%E4%B9%88-%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F-%E5%A6%82%E6%AD%A4%E5%A5%BD%E7%94%A8%EF%BC%9F/">为什么[读时模式]如此好用？</a>
+    </h1>
+  
+
+        
+        <a href="/2019/05/12/%E4%B8%BA%E4%BB%80%E4%B9%88-%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F-%E5%A6%82%E6%AD%A4%E5%A5%BD%E7%94%A8%EF%BC%9F/" class="archive-article-date">
+  	<time datetime="2019-05-12T12:51:52.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>原文链接 <a href="https://www.ibmbigdatahub.com/blog/why-schema-read-so-useful" target="_blank" rel="noopener">Why is Schema on Read So Useful?</a></p>
+<p>尽管我尽了最大的努力来引导，但在与客户的交流中还是会不断出现的一个问题：“我的系统拥有多大的数据量级我才需要使用大数据解决方案？” 如我先前所写，通常情况下，通过数据量来评估是否选择大数据技术是不合理的。尽管在某些情况下（例如，如果你像我们的某些客户一样明确知道要管理6PB以上的数据）是可以根据数据大小选择大数据解决方案，但是对于大多数的大数据项目都是在数据规模变大之前就需要灵活性。这些系统的灵活性体现在很多方面，但我想在这里重点介绍其中一个：“读时模式”。<br>在数据到达存储系统之前，数据的数据结构是确定的，并且我们在写入数据时将该结构应用于数据存储。我们大多数人都非常熟悉【写时模式】，我们使用传统的（仍然很重要）关系型数据库来存储具有特定结构的数据，通常我们认为它是解决问题的唯一方法。因此，为了大家改变这种想法，让我们来看一下这种方法的利弊。写时模式有一些不小的优点，包括：</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">翻译</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+     
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/12/%E4%B8%BA%E4%BB%80%E4%B9%88-%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F-%E5%A6%82%E6%AD%A4%E5%A5%BD%E7%94%A8%EF%BC%9F/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Why-Presto-is-faster-than-Spark-SQL" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/10/Why-Presto-is-faster-than-Spark-SQL/">Why Presto is faster than Spark SQL</a>
+    </h1>
+  
+
+        
+        <a href="/2019/05/10/Why-Presto-is-faster-than-Spark-SQL/" class="archive-article-date">
+  	<time datetime="2019-05-10T09:09:34.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="https://stackoverflow.com/questions/50014017/why-presto-is-faster-than-spark-sql" target="_blank" rel="noopener">https://stackoverflow.com/questions/50014017/why-presto-is-faster-than-spark-sql</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">翻译</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">presto</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Spark</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+     
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/10/Why-Presto-is-faster-than-Spark-SQL/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-读时模式的合理性分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/10/%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%90%88%E7%90%86%E6%80%A7%E5%88%86%E6%9E%90/">读时模式的合理性分析</a>
+    </h1>
+  
+
+        
+        <a href="/2019/05/10/%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%90%88%E7%90%86%E6%80%A7%E5%88%86%E6%9E%90/" class="archive-article-date">
+  	<time datetime="2019-05-10T05:14:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>与读时模式对应的概念是写时模式，英文名称是schema on read 和 schema on write，通常(并非绝对)传统关系型数据库对应schema on write，大数据技术对应schema on read，存在即合理，为何大数据技术会摒弃流行多年的schema on write，那么本文来研究下schema on read的合理性。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">hadoop</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+     
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/10/%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%90%88%E7%90%86%E6%80%A7%E5%88%86%E6%9E%90/">展开全文 >></a>
         </p>
       
 
