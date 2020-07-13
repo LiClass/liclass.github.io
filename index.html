@@ -194,11 +194,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">翻译</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">翻译</a>
         		</li>
       		
 		</ul>
@@ -330,86 +330,6 @@
 
 
   
-    <article id="post-这是一篇随笔" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/06/14/%E8%BF%99%E6%98%AF%E4%B8%80%E7%AF%87%E9%9A%8F%E7%AC%94/">这是一篇随笔</a>
-    </h1>
-  
-
-        
-        <a href="/2020/06/14/%E8%BF%99%E6%98%AF%E4%B8%80%E7%AF%87%E9%9A%8F%E7%AC%94/" class="archive-article-date">
-  	<time datetime="2020-06-14T13:43:18.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-06-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>随笔占位</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">生活</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-     
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/06/14/%E8%BF%99%E6%98%AF%E4%B8%80%E7%AF%87%E9%9A%8F%E7%AC%94/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-map-和-reduce-的个数调整方案" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -449,11 +369,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">笔记</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">MapReduce</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">MapReduce</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">笔记</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -519,7 +439,18 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>map端：<br>读文件：输出到缓冲区：分区：分区内排序：超过80%开始溢写(一个map可能溢写多次，但是最终一定会合并为一个文件)，新进数据从剩余20%开始的位置继续输入：最终会生成多个溢写文件，将文件合并：分区内部排序，执行比较器：<br>reduce端：<br>reducer开始拉取属于自己分区的数据：合并文件：排序：对相同的key进行操作</p>
+        <h2 id="map端："><a href="#map端：" class="headerlink" title="map端："></a>map端：</h2><ul>
+<li>读文件，构造k-v数据</li>
+<li>增加分区属性后，输出到缓冲区：</li>
+<li>超过80%开始溢写(一个map可能溢写多次，但是最终一定会合并为一个文件)，新进数据从剩余20%开始的位置继续输入：</li>
+<li>开始溢写时，数据根据key进行排序和combine，执行combine可减少溢写到磁盘的数据量</li>
+<li>最终会生成多个溢写文件，将文件合并，将相同的分区合并到一起，分区内部排序，合并的过程中会不断地进行 sort &amp; combine 操作</li>
+</ul>
+<h2 id="reduce端："><a href="#reduce端：" class="headerlink" title="reduce端："></a>reduce端：</h2><ul>
+<li>reducer开始拉取属于自己分区的数据，</li>
+<li>合并文件：排序</li>
+<li>对相同的key进行操作</li>
+</ul>
 <p>Map是映射，负责数据的过滤分法，将原始数据转化为键值对；<br>Reduce是合并，将具有相同key值的value进行处理后再输出新的键值对作为最终结果</p>
 <h2 id="MapReduce-运行原理"><a href="#MapReduce-运行原理" class="headerlink" title="MapReduce 运行原理"></a>MapReduce 运行原理</h2><h3 id="Map-Side"><a href="#Map-Side" class="headerlink" title="Map Side"></a>Map Side</h3><h4 id="1-从磁盘读取数据并分片"><a href="#1-从磁盘读取数据并分片" class="headerlink" title="1.从磁盘读取数据并分片"></a>1.从磁盘读取数据并分片</h4><p>默认一个block对应一个分片，对应一个map task</p>
 <h4 id="2-map-task处理"><a href="#2-map-task处理" class="headerlink" title="2.map task处理"></a>2.map task处理</h4><p>map业务处理</p>
@@ -541,11 +472,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">MapReduce</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">MapReduce</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
         		</li>
       		
 		</ul>
@@ -626,11 +557,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -717,11 +648,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -807,11 +738,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">分布式</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -976,11 +907,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">翻译</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">翻译</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -1001,6 +932,90 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/05/10/Why-Presto-is-faster-than-Spark-SQL/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-读时模式的合理性分析" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/10/%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%90%88%E7%90%86%E6%80%A7%E5%88%86%E6%9E%90/">读时模式的合理性分析</a>
+    </h1>
+  
+
+        
+        <a href="/2019/05/10/%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%90%88%E7%90%86%E6%80%A7%E5%88%86%E6%9E%90/" class="archive-article-date">
+  	<time datetime="2019-05-10T05:14:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>与读时模式对应的概念是写时模式，英文名称是schema on read 和 schema on write，通常(并非绝对)传统关系型数据库对应schema on write，大数据技术对应schema on read，存在即合理，为何大数据技术会摒弃流行多年的schema on write，那么本文来研究下schema on read的合理性。</p>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">大数据</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">架构</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">hadoop</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+     
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/10/%E8%AF%BB%E6%97%B6%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%90%88%E7%90%86%E6%80%A7%E5%88%86%E6%9E%90/">展开全文 >></a>
         </p>
       
 
@@ -1127,31 +1142,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">分布式</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">大数据</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">kafka</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">hadoop</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">生活</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
+                <a href="javascript:void(0)" class="js-tag color5">MapReduce</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1167,23 +1162,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">书评</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">心理学</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">MapReduce</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">hive</a>
+                <a href="javascript:void(0)" class="js-tag color3">翻译</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1195,7 +1174,39 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">分布式</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">hadoop</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">kafka</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">笔记</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">hdfs</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">hive</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">书评</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">心理学</a>
               </li>
              
               <li class="article-tag-list-item">
